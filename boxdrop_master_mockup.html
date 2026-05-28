@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BoxDrop — Master Mockup</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<style>
+:root{
+  --primary:#FF4500; --primary-dark:#e03d00;
+  --accent:#FFB300; --ink:#1A1A2E; --muted:#8E8E93;
+  --surface:#F2F2F7; --card:#FFFFFF; --line:#E5E5EA;
+  --success:#00C853; --danger:#EF4444;
+  --bronze:#0EA5E9; --silver:#FF9500; --gold:#00C853;
+  --z-vanak:#8B5CF6; --z-ponak:#0EA5E9; --z-niavaran:#10B981;
+  --z-saadat:#F59E0B; --z-jordan:#EF4444;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f0f1a;font-family:'Vazirmatn',Tahoma,sans-serif;min-height:100vh;padding:30px 12px;color:var(--ink)}
+.wrap{max-width:1380px;margin:0 auto}
+.title-bar{color:#fff;text-align:center;margin-bottom:22px;direction:ltr}
+.title-bar h1{font-size:24px;font-weight:900;letter-spacing:-.5px}
+.title-bar h1 em{color:var(--primary);font-style:normal}
+.title-bar p{font-size:12px;color:#888;margin-top:4px}
+
+.selector{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px;direction:rtl}
+.tab{background:#1f1f2e;color:#aaa;border:1.5px solid #2a2a3e;border-radius:100px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .18s}
+.tab:hover{border-color:var(--primary);color:#fff}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+.stage{display:flex;justify-content:center;align-items:flex-start}
+.phone{width:390px;height:844px;background:var(--surface);border-radius:50px;box-shadow:0 40px 100px rgba(0,0,0,.6),inset 0 0 0 2px #2a2a2a;overflow:hidden;position:relative;display:flex;flex-direction:column}
+
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden;height:100%}
+.screen.active{display:flex}
+
+/* COMMON */
+.sbar{background:#fff;padding:14px 26px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.sbar-t{font-size:15px;font-weight:700}
+.sbar-ic{font-size:12px;display:flex;gap:5px;direction:ltr}
+
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+.scroll::-webkit-scrollbar{display:none}
+
+.bnav{background:#fff;border-top:1px solid var(--line);display:flex;padding:8px 0 22px;flex-shrink:0}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.bni-ic{font-size:22px;filter:grayscale(1);opacity:.5}
+.bni-lb{font-size:10px;font-weight:700;color:#C7C7CC}
+.bni.act .bni-ic{filter:none;opacity:1}
+.bni.act .bni-lb{color:var(--primary)}
+
+.btn-primary{background:var(--primary);color:#fff;border:none;border-radius:16px;padding:14px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;width:100%;transition:background .18s}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-primary:disabled{background:#C7C7CC;cursor:not-allowed}
+.btn-secondary{background:var(--surface);color:var(--ink);border:none;border-radius:16px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;width:100%}
+.btn-ghost{background:transparent;color:var(--primary);border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+
+.input{width:100%;background:var(--surface);border:2px solid transparent;border-radius:14px;padding:14px 16px;font-size:15px;font-family:inherit;color:var(--ink);outline:none;text-align:right;direction:rtl}
+.input:focus{border-color:var(--primary);background:#fff}
+
+/* ===== SPLASH ===== */
+#splash{background:linear-gradient(135deg,#FF4500,#FF8C00);align-items:center;justify-content:center;color:#fff;padding:30px}
+.splash-logo{font-size:80px;margin-bottom:18px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.splash-title{font-size:42px;font-weight:900;letter-spacing:-1px}
+.splash-sub{font-size:14px;opacity:.85;margin-top:10px;font-weight:600}
+.splash-tag{position:absolute;bottom:50px;font-size:13px;color:rgba(255,255,255,.7);font-weight:500}
+
+/* ===== LOGIN ===== */
+.auth-wrap{padding:20px;display:flex;flex-direction:column;flex:1}
+.auth-back{font-size:22px;color:var(--ink);cursor:pointer;width:40px}
+.auth-top{margin:30px 0 26px}
+.auth-title{font-size:26px;font-weight:900;color:var(--ink);line-height:1.3}
+.auth-sub{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.6}
+.phone-input{display:flex;background:var(--surface);border-radius:14px;align-items:center;padding:0 14px;border:2px solid transparent;transition:border .18s;direction:ltr}
+.phone-input:focus-within{border-color:var(--primary);background:#fff}
+.phone-prefix{font-size:15px;font-weight:700;color:var(--muted);padding:14px 8px 14px 0}
+.phone-input input{flex:1;background:transparent;border:none;padding:14px 0;font-size:15px;font-family:inherit;outline:none;color:var(--ink);direction:ltr;text-align:left}
+.auth-foot{margin-top:auto;text-align:center;padding:20px 0}
+.auth-foot p{font-size:11px;color:var(--muted);line-height:1.7}
+
+/* ===== VERIFY ===== */
+.otp-row{display:flex;gap:8px;direction:ltr;justify-content:center;margin:6px 0}
+.otp-cell{width:48px;height:56px;background:var(--surface);border:2px solid transparent;border-radius:12px;font-size:22px;font-weight:900;text-align:center;color:var(--ink);font-family:inherit;outline:none;transition:all .18s}
+.otp-cell:focus,.otp-cell.filled{border-color:var(--primary);background:#fff}
+.resend{margin-top:16px;text-align:center;font-size:13px;color:var(--muted)}
+.resend strong{color:var(--primary)}
+
+/* ===== ONBOARDING ===== */
+.onb-step{display:flex;gap:6px;margin-bottom:24px}
+.onb-dot{flex:1;height:5px;border-radius:100px;background:var(--line)}
+.onb-dot.done{background:var(--primary)}
+.onb-form{display:flex;flex-direction:column;gap:14px}
+.field-label{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;display:block}
+.zone-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.zone-opt{background:var(--surface);border:2px solid transparent;border-radius:14px;padding:14px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .18s}
+.zone-opt:hover{background:#fff}
+.zone-opt.sel{background:#FFF3EE;border-color:var(--primary)}
+.zone-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.zone-name{font-size:13px;font-weight:700;color:var(--ink)}
+.map-pin-box{background:var(--surface);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.map-pin-box .ic{font-size:24px}
+.map-pin-box .body{flex:1}
+.map-pin-box .body strong{font-size:13px;font-weight:800;color:var(--ink);display:block}
+.map-pin-box .body span{font-size:11px;color:var(--muted)}
+
+/* ===== HOME ===== */
+.hdr{background:#fff;padding:10px 16px 12px;border-bottom:1px solid var(--surface);flex-shrink:0}
+.hdr-top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:22px;font-weight:900;letter-spacing:-.5px}
+.logo em{color:var(--primary);font-style:normal}
+.logo b{color:var(--ink)}
+.zbtn{background:var(--surface);border:none;border-radius:12px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px}
+.sav-pill{background:linear-gradient(130deg,var(--primary),#FF8C00);border-radius:14px;padding:9px 14px;margin-top:9px;display:flex;justify-content:space-between;align-items:center}
+.sav-lbl{font-size:11px;color:rgba(255,255,255,.85);font-weight:600}
+.sav-val{font-size:18px;font-weight:900;color:#fff}
+
+.cats{display:flex;gap:7px;padding:10px 14px;overflow-x:auto;background:#fff;border-bottom:1px solid var(--surface);flex-shrink:0}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex-shrink:0;padding:6px 13px;border-radius:100px;font-size:12px;font-weight:700;background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;border:2px solid transparent;transition:all .18s;font-family:inherit}
+.cat.act{background:var(--primary);color:#fff}
+
+.sh{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px}
+.sh h3{font-size:15px;font-weight:800;color:var(--ink)}
+.sh a{font-size:12px;color:var(--primary);font-weight:700;cursor:pointer}
+
+/* DEAL CARD */
+.card{background:#fff;border-radius:20px;margin:0 13px 13px;box-shadow:0 2px 14px rgba(0,0,0,.06);overflow:hidden;cursor:pointer;transition:transform .14s,box-shadow .14s}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.ctop{display:flex;gap:10px;padding:13px 13px 0;align-items:flex-start}
+.cemi{width:62px;height:62px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0}
+.cmid{flex:1;min-width:0}
+.cname{font-size:14px;font-weight:800;color:var(--ink);line-height:1.25}
+.ctags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.zbadge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:800;color:#fff}
+.bbadge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--surface);color:var(--muted)}
+.avs{display:flex;margin-top:6px;align-items:center}
+.av{width:20px;height:20px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:900;margin-right:-6px;flex-shrink:0}
+.av-more{background:#E5E5EA!important;color:var(--muted)!important}
+.avtxt{margin-right:10px;font-size:11px;color:var(--muted);font-weight:600}
+.cright{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.cprice{font-size:18px;font-weight:900;color:var(--ink)}
+.coprice{font-size:11px;color:#C7C7CC;text-decoration:line-through}
+.csave{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;background:#E8F5E9;color:#2E7D32}
+
+.tierbar-wrap{padding:10px 13px 0}
+.tierbar-hdr{display:flex;justify-content:space-between;margin-bottom:6px}
+.tierbar-hdr span{font-size:11px;color:var(--muted);font-weight:600}
+.tierbar-hdr strong{font-size:11px;font-weight:800;color:var(--ink)}
+.tierbar{height:12px;background:var(--surface);border-radius:100px;position:relative;overflow:hidden}
+.tierbar-fill{height:100%;border-radius:100px;transition:width .8s;position:absolute;top:0;right:0;background:linear-gradient(90deg,var(--bronze),var(--silver),var(--gold))}
+.tierbar-fill.partial{background:var(--bronze)}
+.tierbar-fill.partial.silver{background:linear-gradient(90deg,var(--bronze),var(--silver))}
+.tmk{position:absolute;top:0;bottom:0;width:2.5px;background:#fff;z-index:2;border-radius:1px}
+.tier-icons{display:flex;justify-content:space-between;margin-top:6px;padding:0 2px}
+.tier-ic{font-size:13px;opacity:.4;transition:opacity .3s}
+.tier-ic.unlocked{opacity:1}
+
+.nudge{margin:8px 13px 0;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:700;border-right:3px solid;text-align:right}
+
+.cfoot{display:flex;gap:7px;padding:10px 13px 13px;align-items:center}
+.tmc{background:#FFF3EE;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:800;color:var(--primary);white-space:nowrap;direction:ltr}
+.qtyc{display:flex;align-items:center;background:var(--surface);border-radius:10px;overflow:hidden}
+.qtyc button{background:none;border:none;padding:7px 10px;font-size:16px;cursor:pointer;color:var(--primary);font-weight:900;line-height:1;font-family:inherit}
+.qtyc span{font-size:13px;font-weight:800;color:var(--ink);min-width:18px;text-align:center}
+.jbtn{flex:1;background:var(--primary);color:#fff;border:none;border-radius:12px;padding:10px 6px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;transition:background .18s}
+.jbtn.done{background:var(--ink)}
+
+/* ===== DEAL DETAIL ===== */
+.dd-hdr{background:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--surface);flex-shrink:0}
+.dd-back{font-size:20px;cursor:pointer;color:var(--ink)}
+.dd-hdr h3{flex:1;font-size:16px;font-weight:800;color:var(--ink)}
+.dd-share{font-size:18px;cursor:pointer;color:var(--muted)}
+.dd-hero{background:#fff;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;border-bottom:8px solid var(--surface)}
+.dd-emi{width:96px;height:96px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:54px}
+.dd-name{font-size:20px;font-weight:900;color:var(--ink);text-align:center}
+.dd-sub{font-size:12px;color:var(--muted)}
+.dd-tags{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;justify-content:center}
+.dd-prices{display:flex;align-items:baseline;gap:10px;margin-top:8px}
+.dd-price-now{font-size:26px;font-weight:900;color:var(--primary)}
+.dd-price-old{font-size:14px;color:#C7C7CC;text-decoration:line-through}
+.dd-save-pill{background:#E8F5E9;color:#2E7D32;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;margin-top:4px}
+
+.dd-section{background:#fff;padding:14px 16px;border-bottom:8px solid var(--surface)}
+.dd-section h4{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.dd-progress-info{display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px}
+.dd-progress-info .left{color:var(--muted);font-weight:600}
+.dd-progress-info .right{font-weight:800;color:var(--ink)}
+.tier-ladder{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.tier-row{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:14px;background:var(--surface);border:2.5px solid transparent;transition:all .2s}
+.tier-row.cur{background:#FFF8F5;border-color:var(--primary)}
+.tier-row.unlocked{background:#F0FFF4;border-color:var(--success)}
+.tier-ic-big{font-size:24px;flex-shrink:0;width:30px;text-align:center}
+.tier-body{flex:1}
+.tier-thresh{font-size:11px;color:var(--muted);font-weight:600}
+.tier-label{font-size:14px;font-weight:800;color:var(--ink);margin-top:1px}
+.tier-status{font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.tier-status.unlk{background:var(--success);color:#fff}
+.tier-status.cur{background:var(--primary);color:#fff}
+.tier-status.lkd{background:#E5E5EA;color:var(--muted)}
+
+.reward-card{background:linear-gradient(130deg,var(--ink),#2D2D50);border-radius:16px;padding:14px;display:flex;gap:12px;align-items:center;margin-top:12px}
+.reward-card .ic{font-size:28px}
+.reward-card .body strong{font-size:13px;font-weight:800;color:#fff;display:block}
+.reward-card .body span{font-size:11px;color:#aaa;margin-top:3px;display:block;line-height:1.5}
+
+.dd-foot{background:#fff;padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-shrink:0}
+.dd-foot .qtyc{flex-shrink:0}
+.dd-foot .jbtn{padding:14px;font-size:14px}
+
+/* ===== JOIN MODAL ===== */
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:100;display:none;align-items:flex-end}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:28px 28px 0 0;width:100%;padding:16px 16px 28px;max-height:92%;overflow-y:auto;animation:su .28s cubic-bezier(.4,0,.2,1)}
+.modal::-webkit-scrollbar{display:none}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhnd{width:36px;height:4px;background:#E5E5EA;border-radius:100px;margin:0 auto 14px}
+.mhero{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.memi{width:62px;height:62px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0}
+.minfo .mname{font-size:17px;font-weight:900;color:var(--ink);line-height:1.2}
+.minfo .msub{font-size:12px;color:var(--muted);margin-top:3px}
+.mqrow{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--surface);border-bottom:1px solid var(--surface);margin-bottom:14px}
+.mqlbl{font-size:14px;font-weight:700;color:var(--ink)}
+.mqctrl{display:flex;align-items:center;background:var(--surface);border-radius:12px;overflow:hidden}
+.mqctrl button{background:none;border:none;width:38px;height:38px;font-size:18px;font-weight:900;cursor:pointer;color:var(--primary);font-family:inherit}
+.mqctrl span{font-size:16px;font-weight:900;color:var(--ink);min-width:28px;text-align:center}
+.mtots{margin-bottom:14px}
+.mtr{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+.mtr span:first-child{font-size:13px;color:var(--muted)}
+.mtr span:last-child{font-size:14px;font-weight:800;color:var(--ink)}
+.mtr.big{border-top:1px solid var(--line);padding-top:10px;margin-top:6px}
+.mtr.big span:first-child{font-size:14px;font-weight:800;color:var(--ink)}
+.mtr.big span:last-child{font-size:18px;color:var(--primary)}
+.refer-tip{background:#FFF8E1;border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center;margin-bottom:14px}
+.refer-tip .ic{font-size:22px}
+.refer-tip .body{flex:1}
+.refer-tip .body strong{font-size:12px;color:var(--ink);font-weight:800}
+.refer-tip .body span{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+
+/* ===== WALLET ===== */
+.wallet-hero{background:linear-gradient(135deg,var(--ink),#2D2D50);padding:24px 20px;color:#fff;flex-shrink:0}
+.wallet-hero h4{font-size:13px;color:rgba(255,255,255,.7);font-weight:600;margin-bottom:6px}
+.wallet-bal{font-size:36px;font-weight:900;letter-spacing:-.5px}
+.wallet-bal small{font-size:14px;font-weight:600;margin-right:6px}
+.wallet-stats{display:flex;gap:10px;margin-top:14px}
+.wallet-stat{flex:1;background:rgba(255,255,255,.1);border-radius:12px;padding:10px 12px}
+.wallet-stat .lbl{font-size:10px;color:rgba(255,255,255,.6);font-weight:600;display:block;margin-bottom:3px}
+.wallet-stat .val{font-size:14px;font-weight:800}
+.wallet-actions{padding:14px 16px;background:#fff;display:flex;gap:10px;border-bottom:8px solid var(--surface)}
+.tx-list{padding:8px 0}
+.tx-row{padding:14px 16px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--surface)}
+.tx-ic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tx-ic.credit{background:#E8F5E9;color:var(--success)}
+.tx-ic.debit{background:#FFEBEE;color:var(--danger)}
+.tx-body{flex:1;min-width:0}
+.tx-desc{font-size:13px;font-weight:700;color:var(--ink)}
+.tx-date{font-size:11px;color:var(--muted);margin-top:2px}
+.tx-amt{font-size:14px;font-weight:900;flex-shrink:0}
+.tx-amt.credit{color:var(--success)}
+.tx-amt.debit{color:var(--ink)}
+
+/* ===== ORDERS ===== */
+.tabs-row{display:flex;background:#fff;border-bottom:1px solid var(--surface);flex-shrink:0}
+.tab-it{flex:1;text-align:center;padding:14px;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;font-family:inherit;background:none;border-left:none;border-right:none;border-top:none}
+.tab-it.act{color:var(--primary);border-bottom-color:var(--primary)}
+.order-card{background:#fff;margin:10px 13px;border-radius:16px;overflow:hidden;border:1px solid var(--surface);cursor:pointer}
+.order-top{padding:12px 14px;display:flex;align-items:center;gap:10px}
+.order-emi{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.order-info{flex:1}
+.order-name{font-size:14px;font-weight:800;color:var(--ink)}
+.order-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.order-status{font-size:10px;font-weight:800;padding:4px 9px;border-radius:20px;flex-shrink:0}
+.status-locked{background:#FFF3EE;color:var(--primary)}
+.status-preparing{background:#FFF8E1;color:#F59E0B}
+.status-delivery{background:#E3F2FD;color:#0EA5E9}
+.status-delivered{background:#E8F5E9;color:var(--success)}
+.status-expired{background:#FFEBEE;color:var(--danger)}
+.order-foot{padding:10px 14px;background:var(--surface);font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.order-foot .l{color:var(--muted)}
+.order-foot .r{font-weight:800;color:var(--ink)}
+
+/* ===== ORDER DETAIL ===== */
+.timeline{padding:18px 16px;background:#fff;border-bottom:8px solid var(--surface)}
+.tl-row{display:flex;gap:14px;position:relative;padding-bottom:18px}
+.tl-row:last-child{padding-bottom:0}
+.tl-dot{width:24px;height:24px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:900;flex-shrink:0;z-index:2}
+.tl-dot.done{background:var(--success)}
+.tl-dot.cur{background:var(--primary);box-shadow:0 0 0 4px rgba(255,69,0,.2)}
+.tl-row:not(:last-child)::before{content:'';position:absolute;right:11px;top:24px;bottom:0;width:2px;background:var(--line)}
+.tl-row.done:not(:last-child)::before{background:var(--success)}
+.tl-body{flex:1}
+.tl-state{font-size:14px;font-weight:800;color:var(--ink)}
+.tl-row:not(.done):not(.cur) .tl-state{color:var(--muted)}
+.tl-at{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ===== DELIVERIES ===== */
+.del-card{background:#fff;margin:12px 13px;border-radius:16px;overflow:hidden;border:1px solid var(--surface)}
+.del-top{padding:14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--surface)}
+.del-date-box{background:var(--primary);color:#fff;border-radius:12px;padding:8px 12px;text-align:center;min-width:60px}
+.del-date-box .d{font-size:20px;font-weight:900;line-height:1}
+.del-date-box .m{font-size:10px;font-weight:700;margin-top:2px}
+.del-mid{flex:1}
+.del-zone{font-size:14px;font-weight:800;color:var(--ink)}
+.del-win{font-size:11px;color:var(--muted);margin-top:2px;direction:ltr}
+.del-st{font-size:10px;font-weight:800;padding:4px 9px;border-radius:20px}
+.del-items{padding:12px 14px}
+.del-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px}
+.del-item .e{font-size:18px}
+.del-item .n{flex:1;color:var(--ink);font-weight:600}
+.del-item .q{color:var(--muted);font-weight:700}
+.del-refund{background:#E8F5E9;padding:10px 14px;font-size:12px;font-weight:700;color:#2E7D32;display:flex;align-items:center;gap:8px}
+
+/* ===== PROFILE ===== */
+.prof-hero{background:#fff;padding:20px 16px;display:flex;align-items:center;gap:14px;border-bottom:8px solid var(--surface)}
+.prof-av{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#FF8C00);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:900;flex-shrink:0}
+.prof-info{flex:1}
+.prof-name{font-size:18px;font-weight:900;color:var(--ink)}
+.prof-phone{font-size:12px;color:var(--muted);margin-top:2px;direction:ltr;text-align:right}
+.refer-card{background:linear-gradient(135deg,#FFB300,#FF8C00);margin:0 13px 14px;border-radius:18px;padding:16px;color:#fff}
+.refer-card h4{font-size:15px;font-weight:900;margin-bottom:4px}
+.refer-card p{font-size:11px;opacity:.9;margin-bottom:12px;line-height:1.5}
+.refer-code-box{background:rgba(255,255,255,.2);border:1.5px dashed rgba(255,255,255,.5);border-radius:12px;padding:10px;text-align:center;font-size:18px;font-weight:900;letter-spacing:2px;font-family:'Courier New',monospace;margin-bottom:10px}
+.refer-share{display:flex;gap:6px}
+.refer-share button{flex:1;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:12px;font-weight:700;padding:8px;border-radius:10px;cursor:pointer;font-family:inherit}
+.menu{background:#fff;border-radius:14px;margin:0 13px}
+.menu-it{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--surface);cursor:pointer}
+.menu-it:last-child{border-bottom:none}
+.menu-it .ic{font-size:20px;width:24px;text-align:center}
+.menu-it .lbl{flex:1;font-size:14px;font-weight:700;color:var(--ink)}
+.menu-it .ch{font-size:14px;color:var(--muted)}
+
+/* Helpers for nav back/forward in mockup */
+.nav-arrow{font-size:18px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="title-bar">
+    <h1><em>Box</em>Drop — Master Reference Mockup 📦</h1>
+    <p>11 screens · Persian / RTL · Bold playful style · Mechanics encoded per spec</p>
+  </div>
+
+  <div class="selector">
+    <button class="tab active" data-s="splash">۱. Splash</button>
+    <button class="tab" data-s="login">۲. Login</button>
+    <button class="tab" data-s="verify">۳. Verify</button>
+    <button class="tab" data-s="onboarding">۴. Onboarding</button>
+    <button class="tab" data-s="home">۵. Home Feed</button>
+    <button class="tab" data-s="deal">۶. Deal Detail</button>
+    <button class="tab" data-s="join">۷. Join Modal</button>
+    <button class="tab" data-s="wallet">۸. Wallet</button>
+    <button class="tab" data-s="orders">۹. Orders</button>
+    <button class="tab" data-s="orderdetail">۱۰. Order Detail</button>
+    <button class="tab" data-s="deliveries">۱۱. Deliveries</button>
+    <button class="tab" data-s="profile">۱۲. Profile</button>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="sbar"><span class="sbar-t">9:41</span><div class="sbar-ic"><span>📶</span><span>🔋</span></div></div>
+
+      <!-- ===== SPLASH ===== -->
+      <div class="screen active" id="splash" style="background:linear-gradient(135deg,#FF4500,#FF8C00);align-items:center;justify-content:center;color:#fff;padding:30px;position:relative">
+        <div class="splash-logo">📦</div>
+        <div class="splash-title">BoxDrop</div>
+        <div class="splash-sub">باهم بخر، ارزون‌تر بشه</div>
+        <div class="splash-tag">طراحی شده در تهران ❤️</div>
+      </div>
+
+      <!-- ===== LOGIN ===== -->
+      <div class="screen" id="login">
+        <div class="auth-wrap">
+          <div class="auth-back" onclick="go('splash')">→</div>
+          <div class="auth-top">
+            <div class="auth-title">به BoxDrop خوش اومدی 👋</div>
+            <div class="auth-sub">شماره موبایلت رو وارد کن تا کد تأیید برات بفرستیم.</div>
+          </div>
+          <label class="field-label">شماره موبایل</label>
+          <div class="phone-input">
+            <input type="tel" placeholder="9120000000" value="9123456789">
+            <span class="phone-prefix">98+</span>
+          </div>
+          <button class="btn-primary" style="margin-top:18px" onclick="go('verify')">ارسال کد تأیید</button>
+          <div class="auth-foot">
+            <p>با ادامه، با <strong style="color:var(--primary)">قوانین و حریم خصوصی</strong> BoxDrop موافقت می‌کنی.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== VERIFY ===== -->
+      <div class="screen" id="verify">
+        <div class="auth-wrap">
+          <div class="auth-back" onclick="go('login')">→</div>
+          <div class="auth-top">
+            <div class="auth-title">کد تأیید رو وارد کن 🔐</div>
+            <div class="auth-sub">یه کد ۶ رقمی به شماره <strong style="color:var(--ink)" dir="ltr">+98 912 345 6789</strong> فرستادیم.</div>
+          </div>
+          <div class="otp-row">
+            <input class="otp-cell filled" value="۱" maxlength="1">
+            <input class="otp-cell filled" value="۲" maxlength="1">
+            <input class="otp-cell filled" value="۳" maxlength="1">
+            <input class="otp-cell filled" value="۴" maxlength="1">
+            <input class="otp-cell" value="" maxlength="1">
+            <input class="otp-cell" value="" maxlength="1">
+          </div>
+          <div class="resend">دریافت نکردی؟ ارسال مجدد در <strong>۰:۴۳</strong></div>
+          <button class="btn-primary" style="margin-top:24px" onclick="go('onboarding')">تأیید و ادامه</button>
+          <div class="auth-foot"></div>
+        </div>
+      </div>
+
+      <!-- ===== ONBOARDING ===== -->
+      <div class="screen" id="onboarding">
+        <div class="auth-wrap">
+          <div class="onb-step">
+            <div class="onb-dot done"></div>
+            <div class="onb-dot done"></div>
+            <div class="onb-dot"></div>
+          </div>
+          <div class="auth-title" style="font-size:22px">یکم بهت بشناسمت 🎯</div>
+          <div class="auth-sub" style="margin-bottom:18px">برای ارسال درست محصول‌ها این اطلاعات رو ازت می‌خوایم.</div>
+
+          <div class="onb-form">
+            <div>
+              <label class="field-label">اسم و فامیل</label>
+              <input class="input" value="متین احمدی" placeholder="مثلاً علی رضایی">
+            </div>
+            <div>
+              <label class="field-label">منطقه‌ات کجاست؟</label>
+              <div class="zone-picker">
+                <div class="zone-opt sel"><div class="zone-dot" style="background:var(--z-vanak)"></div><div class="zone-name">ونک</div></div>
+                <div class="zone-opt"><div class="zone-dot" style="background:var(--z-ponak)"></div><div class="zone-name">پونک</div></div>
+                <div class="zone-opt"><div class="zone-dot" style="background:var(--z-niavaran)"></div><div class="zone-name">نیاوران</div></div>
+                <div class="zone-opt"><div class="zone-dot" style="background:var(--z-saadat)"></div><div class="zone-name">سعادت‌آباد</div></div>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">آدرس کامل</label>
+              <input class="input" placeholder="مثلاً خیابان ولیعصر، کوچه ۱۲، پلاک ۸، واحد ۳">
+            </div>
+            <div class="map-pin-box">
+              <div class="ic">📍</div>
+              <div class="body">
+                <strong>پین روی نقشه (اختیاری)</strong>
+                <span>برای پیدا کردن دقیق‌تر آدرس به پیک</span>
+              </div>
+              <div class="ch" style="color:var(--muted)">‹</div>
+            </div>
+          </div>
+          <button class="btn-primary" style="margin-top:20px" onclick="go('home')">شروع خرید 🚀</button>
+        </div>
+      </div>
+
+      <!-- ===== HOME ===== -->
+      <div class="screen" id="home">
+        <div class="hdr">
+          <div class="hdr-top">
+            <div class="logo"><em>Box</em><b>Drop</b> 📦</div>
+            <button class="zbtn">📍 ونک ‹</button>
+          </div>
+          <div class="sav-pill">
+            <span class="sav-lbl">💰 کل صرفه‌جویی شما تا امروز</span>
+            <span class="sav-val">۱۲۴,۵۰۰ ت</span>
+          </div>
+        </div>
+        <div class="cats">
+          <div class="cat act">همه 🏷️</div>
+          <div class="cat">🥤 نوشیدنی</div>
+          <div class="cat">🧀 لبنیات</div>
+          <div class="cat">🥫 کنسرو</div>
+          <div class="cat">🫒 روغن</div>
+          <div class="cat">☕ قهوه</div>
+        </div>
+        <div class="scroll" id="homeScroll">
+          <div class="sh"><h3>🔥 نزدیک به تکمیل</h3><a>همه</a></div>
+          <div id="cards"></div>
+        </div>
+        <div class="bnav">
+          <div class="bni act" onclick="go('home')"><div class="bni-ic">🏠</div><div class="bni-lb">خانه</div></div>
+          <div class="bni"><div class="bni-ic">🔍</div><div class="bni-lb">جستجو</div></div>
+          <div class="bni" onclick="go('orders')"><div class="bni-ic">📦</div><div class="bni-lb">سفارش‌ها</div></div>
+          <div class="bni" onclick="go('wallet')"><div class="bni-ic">💳</div><div class="bni-lb">کیف پول</div></div>
+          <div class="bni" onclick="go('profile')"><div class="bni-ic">👤</div><div class="bni-lb">پروفایل</div></div>
+        </div>
+      </div>
+
+      <!-- ===== DEAL DETAIL ===== -->
+      <div class="screen" id="deal">
+        <div class="dd-hdr">
+          <div class="dd-back" onclick="go('home')">→</div>
+          <h3>جزئیات دیل</h3>
+          <div class="dd-share">↗</div>
+        </div>
+        <div class="scroll">
+          <div class="dd-hero">
+            <div class="dd-emi" style="background:#FFF3EE">🍺</div>
+            <div class="dd-name">آبجو مالت بدون الکل</div>
+            <div class="dd-sub">عرضه‌کننده: شرکت مالت‌سازی تهران</div>
+            <div class="dd-tags">
+              <span class="zbadge" style="background:var(--z-vanak)">ونک</span>
+              <span class="bbadge">📦 جعبه ۱۲ تایی</span>
+            </div>
+            <div class="dd-prices">
+              <span class="dd-price-now">۱۷,۰۰۰ ت</span>
+              <span class="dd-price-old">۲۴,۰۰۰ ت</span>
+            </div>
+            <div class="dd-save-pill">۲۹٪ ارزون‌تر از بازار</div>
+          </div>
+
+          <div class="dd-section">
+            <h4>📊 پیشرفت دیل</h4>
+            <div class="dd-progress-info">
+              <span class="left">۷ نفر تا الان پیوستن</span>
+              <span class="right">۹ از ۱۲</span>
+            </div>
+            <div class="tierbar">
+              <div class="tierbar-fill partial silver" style="width:75%"></div>
+              <div class="tmk" style="right:41.6%"></div>
+              <div class="tmk" style="right:75%"></div>
+            </div>
+            <div class="tier-icons">
+              <span class="tier-ic unlocked">🥇</span>
+              <span class="tier-ic unlocked">🥈</span>
+              <span class="tier-ic unlocked">🥉</span>
+            </div>
+            <div style="font-size:11px;color:var(--primary);font-weight:700;margin-top:10px;text-align:center;background:#FFF3EE;padding:8px;border-radius:10px">
+              ⏱ تا قفل شدن دیل: <strong style="direction:ltr;display:inline-block" dir="ltr">02:14:33</strong>
+            </div>
+          </div>
+
+          <div class="dd-section">
+            <h4>🏆 مراحل و دستاوردها</h4>
+            <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:4px">قیمت برای همه ثابته: ۱۷,۰۰۰ ت. این مراحل فقط نشون می‌ده دیل چقدر گرم شده.</div>
+            <div class="tier-ladder">
+              <div class="tier-row unlocked">
+                <div class="tier-ic-big">🥉</div>
+                <div class="tier-body">
+                  <div class="tier-thresh">۵ نفر و بیشتر</div>
+                  <div class="tier-label">گرم شدن دیل</div>
+                </div>
+                <span class="tier-status unlk">✓ آنلاک شد</span>
+              </div>
+              <div class="tier-row cur">
+                <div class="tier-ic-big">🥈</div>
+                <div class="tier-body">
+                  <div class="tier-thresh">۹ نفر و بیشتر</div>
+                  <div class="tier-label">داغ شد 🔥</div>
+                </div>
+                <span class="tier-status cur">مرحله فعلی</span>
+              </div>
+              <div class="tier-row">
+                <div class="tier-ic-big">🥇</div>
+                <div class="tier-body">
+                  <div class="tier-thresh">۱۲ نفر (تکمیل جعبه)</div>
+                  <div class="tier-label">آنلاک قیمت عمده</div>
+                </div>
+                <span class="tier-status lkd">۳ نفر دیگه</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dd-section">
+            <h4>🎁 پاداش‌ها</h4>
+            <div class="reward-card">
+              <div class="ic">🏆</div>
+              <div class="body">
+                <strong>قهرمان حجم</strong>
+                <span>هر کی بیشترین تعداد رو از این جعبه بخره، ۳٪ از مبلغش بهش برمی‌گرده توی کیف پولش</span>
+              </div>
+            </div>
+            <div class="reward-card" style="background:linear-gradient(130deg,#8B5CF6,#6366F1)">
+              <div class="ic">🤝</div>
+              <div class="body">
+                <strong>دعوت از دوست</strong>
+                <span>دوستت رو دعوت کن. وقتی به دیل می‌پیونده، هر دو ۲٪ کش‌بک می‌گیرید</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dd-section" style="border-bottom:none">
+            <h4>📦 توضیحات محصول</h4>
+            <p style="font-size:13px;color:var(--ink);line-height:1.7">آبجو مالت بدون الکل با طعم لیمو، در بطری شیشه‌ای ۳۳۰ میلی‌لیتری. جعبه ۱۲ عددی، تاریخ تولید کمتر از ۱ ماه. مناسب برای جلسات خانوادگی و دورهمی.</p>
+          </div>
+        </div>
+        <div class="dd-foot">
+          <div class="qtyc">
+            <button>−</button>
+            <span>۲</span>
+            <button>+</button>
+          </div>
+          <button class="jbtn" onclick="openJoinModal()">پیوستن به دیل 🚀</button>
+        </div>
+      </div>
+
+      <!-- ===== JOIN MODAL (lives inside deal screen) ===== -->
+      <div class="overlay" id="joinOverlay" onclick="closeJoinModal(event)">
+        <div class="modal">
+          <div class="mhnd"></div>
+          <div class="mhero">
+            <div class="memi" style="background:#FFF3EE">🍺</div>
+            <div class="minfo">
+              <div class="mname">آبجو مالت بدون الکل</div>
+              <div class="msub">قیمت عمده: ۱۷,۰۰۰ ت / واحد</div>
+            </div>
+          </div>
+          <div class="mqrow">
+            <span class="mqlbl">چند تا می‌خوای؟</span>
+            <div class="mqctrl">
+              <button>−</button>
+              <span>۲</span>
+              <button>+</button>
+            </div>
+          </div>
+          <div class="mtots">
+            <div class="mtr"><span>قیمت محصول (۲ عدد)</span><span>۳۴,۰۰۰ ت</span></div>
+            <div class="mtr"><span>برآورد هزینه ارسال</span><span>۳۵,۰۰۰ ت</span></div>
+            <div class="mtr" style="color:var(--success)"><span style="color:var(--success)!important;font-size:11px">✨ احتمالاً برمی‌گرده بخشی از هزینه ارسال</span><span style="font-size:10px;color:var(--muted)!important">با تعداد همسایه‌ها</span></div>
+            <div class="mtr big"><span>قفل می‌شه از کیف پول</span><span>۶۹,۰۰۰ ت</span></div>
+          </div>
+          <div class="refer-tip">
+            <div class="ic">🎁</div>
+            <div class="body">
+              <strong>دوستت رو دعوت کن</strong>
+              <span>۲٪ کش‌بک برای هر دو وقتی دیل قفل شه</span>
+            </div>
+            <button style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit">🔗</button>
+          </div>
+          <button class="btn-primary" onclick="closeJoinModal();go('orders')">تأیید و پیوستن 🚀</button>
+          <button class="btn-ghost" style="margin-top:8px;width:100%" onclick="closeJoinModal()">بعداً</button>
+        </div>
+      </div>
+
+      <!-- ===== WALLET ===== -->
+      <div class="screen" id="wallet">
+        <div class="dd-hdr">
+          <div class="dd-back" onclick="go('home')">→</div>
+          <h3>کیف پول</h3>
+          <div style="width:18px"></div>
+        </div>
+        <div class="scroll">
+          <div class="wallet-hero">
+            <h4>موجودی قابل استفاده</h4>
+            <div class="wallet-bal">۴۵۵,۵۰۰<small>ت</small></div>
+            <div class="wallet-stats">
+              <div class="wallet-stat">
+                <span class="lbl">قفل شده در دیل‌ها</span>
+                <span class="val">۶۹,۰۰۰ ت</span>
+              </div>
+              <div class="wallet-stat">
+                <span class="lbl">کل صرفه‌جویی</span>
+                <span class="val">۱۲۴,۵۰۰ ت</span>
+              </div>
+            </div>
+          </div>
+          <div class="wallet-actions">
+            <button class="btn-primary">💳 افزایش موجودی</button>
+            <button class="btn-secondary" style="max-width:120px">📜 سوابق</button>
+          </div>
+          <div class="sh"><h3>تراکنش‌های اخیر</h3></div>
+          <div class="tx-list">
+            <div class="tx-row">
+              <div class="tx-ic credit">↓</div>
+              <div class="tx-body">
+                <div class="tx-desc">بازگشت هزینه ارسال</div>
+                <div class="tx-date">۱۲ خرداد · ۸ همسایه پیوستن</div>
+              </div>
+              <div class="tx-amt credit">+۱۸,۰۰۰ ت</div>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ic credit">🏆</div>
+              <div class="tx-body">
+                <div class="tx-desc">پاداش قهرمان حجم</div>
+                <div class="tx-date">۱۲ خرداد · دیل آبجو مالت</div>
+              </div>
+              <div class="tx-amt credit">+۲,۵۵۰ ت</div>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ic debit">🔒</div>
+              <div class="tx-body">
+                <div class="tx-desc">قفل برای دیل آبجو مالت</div>
+                <div class="tx-date">۱۰ خرداد · ۲ عدد</div>
+              </div>
+              <div class="tx-amt debit">−۶۹,۰۰۰ ت</div>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ic credit">💳</div>
+              <div class="tx-body">
+                <div class="tx-desc">افزایش موجودی</div>
+                <div class="tx-date">۱۰ خرداد · زرین‌پال</div>
+              </div>
+              <div class="tx-amt credit">+۵۰۰,۰۰۰ ت</div>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ic credit">🤝</div>
+              <div class="tx-body">
+                <div class="tx-desc">کش‌بک معرفی دوست</div>
+                <div class="tx-date">۸ خرداد · دیل قهوه</div>
+              </div>
+              <div class="tx-amt credit">+۴,۴۰۰ ت</div>
+            </div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bni" onclick="go('home')"><div class="bni-ic">🏠</div><div class="bni-lb">خانه</div></div>
+          <div class="bni"><div class="bni-ic">🔍</div><div class="bni-lb">جستجو</div></div>
+          <div class="bni" onclick="go('orders')"><div class="bni-ic">📦</div><div class="bni-lb">سفارش‌ها</div></div>
+          <div class="bni act"><div class="bni-ic">💳</div><div class="bni-lb">کیف پول</div></div>
+          <div class="bni" onclick="go('profile')"><div class="bni-ic">👤</div><div class="bni-lb">پروفایل</div></div>
+        </div>
+      </div>
+
+      <!-- ===== ORDERS ===== -->
+      <div class="screen" id="orders">
+        <div class="dd-hdr">
+          <div style="width:18px"></div>
+          <h3>سفارش‌های من</h3>
+          <div style="width:18px"></div>
+        </div>
+        <div class="tabs-row">
+          <button class="tab-it act">فعال (۳)</button>
+          <button class="tab-it">گذشته (۱۲)</button>
+        </div>
+        <div class="scroll">
+          <div class="order-card" onclick="go('orderdetail')">
+            <div class="order-top">
+              <div class="order-emi" style="background:#FFF3EE">🍺</div>
+              <div class="order-info">
+                <div class="order-name">آبجو مالت بدون الکل × ۲</div>
+                <div class="order-meta">ونک · پنج‌شنبه ۱۵ خرداد</div>
+              </div>
+              <span class="order-status status-preparing">در حال آماده‌سازی</span>
+            </div>
+            <div class="order-foot">
+              <span class="l">قفل شده در کیف پول</span>
+              <span class="r">۶۹,۰۰۰ ت</span>
+            </div>
+          </div>
+
+          <div class="order-card">
+            <div class="order-top">
+              <div class="order-emi" style="background:#FFF8E1">☕</div>
+              <div class="order-info">
+                <div class="order-name">قهوه اسپرسو ایتالیایی × ۱</div>
+                <div class="order-meta">ونک · در انتظار قفل دیل</div>
+              </div>
+              <span class="order-status status-locked">منتظر تکمیل</span>
+            </div>
+            <div class="order-foot">
+              <span class="l">۷ از ۱۰ نفر پیوستن</span>
+              <span class="r">۲۵۵,۰۰۰ ت</span>
+            </div>
+          </div>
+
+          <div class="order-card">
+            <div class="order-top">
+              <div class="order-emi" style="background:#E3F2FD">🐟</div>
+              <div class="order-info">
+                <div class="order-name">ماهی تن با روغن × ۳</div>
+                <div class="order-meta">ونک · در راه‌ست 🚚</div>
+              </div>
+              <span class="order-status status-delivery">در حال ارسال</span>
+            </div>
+            <div class="order-foot">
+              <span class="l">تحویل بین ۱۴:۰۰ تا ۱۷:۰۰</span>
+              <span class="r">۲۹,۶۰۰ ت</span>
+            </div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bni" onclick="go('home')"><div class="bni-ic">🏠</div><div class="bni-lb">خانه</div></div>
+          <div class="bni"><div class="bni-ic">🔍</div><div class="bni-lb">جستجو</div></div>
+          <div class="bni act"><div class="bni-ic">📦</div><div class="bni-lb">سفارش‌ها</div></div>
+          <div class="bni" onclick="go('wallet')"><div class="bni-ic">💳</div><div class="bni-lb">کیف پول</div></div>
+          <div class="bni" onclick="go('profile')"><div class="bni-ic">👤</div><div class="bni-lb">پروفایل</div></div>
+        </div>
+      </div>
+
+      <!-- ===== ORDER DETAIL ===== -->
+      <div class="screen" id="orderdetail">
+        <div class="dd-hdr">
+          <div class="dd-back" onclick="go('orders')">→</div>
+          <h3>جزئیات سفارش</h3>
+          <div style="width:18px"></div>
+        </div>
+        <div class="scroll">
+          <div class="dd-hero" style="border-bottom:8px solid var(--surface)">
+            <div class="dd-emi" style="background:#FFF3EE">🍺</div>
+            <div class="dd-name">آبجو مالت بدون الکل</div>
+            <div class="dd-sub">۲ عدد · ونک</div>
+            <div class="dd-prices">
+              <span class="dd-price-now" style="font-size:22px">۶۹,۰۰۰ ت</span>
+            </div>
+            <div class="dd-sub" style="font-size:11px;margin-top:2px">شامل ۳۴,۰۰۰ ت محصول + ۳۵,۰۰۰ ت برآورد ارسال</div>
+          </div>
+          <div class="timeline">
+            <div class="tl-row done">
+              <div class="tl-dot done">✓</div>
+              <div class="tl-body">
+                <div class="tl-state">پیوستن به دیل</div>
+                <div class="tl-at">۱۰ خرداد، ۱۴:۲۲</div>
+              </div>
+            </div>
+            <div class="tl-row done">
+              <div class="tl-dot done">✓</div>
+              <div class="tl-body">
+                <div class="tl-state">قفل شدن دیل (تکمیل جعبه ۱۲ تایی)</div>
+                <div class="tl-at">۱۲ خرداد، ۲۳:۵۸</div>
+              </div>
+            </div>
+            <div class="tl-row cur">
+              <div class="tl-dot cur">●</div>
+              <div class="tl-body">
+                <div class="tl-state">آماده‌سازی سفارش</div>
+                <div class="tl-at">در حال انجام...</div>
+              </div>
+            </div>
+            <div class="tl-row">
+              <div class="tl-dot">●</div>
+              <div class="tl-body">
+                <div class="tl-state">تحویل به پیک</div>
+                <div class="tl-at">به زودی</div>
+              </div>
+            </div>
+            <div class="tl-row">
+              <div class="tl-dot">●</div>
+              <div class="tl-body">
+                <div class="tl-state">تحویل به شما</div>
+                <div class="tl-at">پنج‌شنبه ۱۵ خرداد، بین ۱۴-۱۷</div>
+              </div>
+            </div>
+          </div>
+          <div class="dd-section" style="border-bottom:none">
+            <h4>💬 پشتیبانی</h4>
+            <p style="font-size:13px;color:var(--ink);line-height:1.7">سؤالی داری؟ از طریق تلگرام با ما در ارتباط باش.</p>
+            <button class="btn-secondary" style="margin-top:12px">پشتیبانی تلگرام 💬</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DELIVERIES ===== -->
+      <div class="screen" id="deliveries">
+        <div class="dd-hdr">
+          <div class="dd-back" onclick="go('home')">→</div>
+          <h3>ارسال‌ها</h3>
+          <div style="width:18px"></div>
+        </div>
+        <div class="tabs-row">
+          <button class="tab-it act">پیش‌رو (۱)</button>
+          <button class="tab-it">گذشته (۴)</button>
+        </div>
+        <div class="scroll">
+          <div class="del-card">
+            <div class="del-top">
+              <div class="del-date-box">
+                <div class="d">۱۵</div>
+                <div class="m">خرداد</div>
+              </div>
+              <div class="del-mid">
+                <div class="del-zone">ونک · پنج‌شنبه</div>
+                <div class="del-win">پنجره تحویل: 14:00 - 17:00</div>
+              </div>
+              <span class="order-status status-locked">برنامه‌ریزی شده</span>
+            </div>
+            <div class="del-items">
+              <div class="del-item"><span class="e">🍺</span><span class="n">آبجو مالت</span><span class="q">×۲</span></div>
+              <div class="del-item"><span class="e">🐟</span><span class="n">ماهی تن</span><span class="q">×۳</span></div>
+              <div class="del-item"><span class="e">☕</span><span class="n">قهوه اسپرسو</span><span class="q">×۱</span></div>
+            </div>
+            <div class="del-refund">
+              💚 تخمین: ۸ همسایه روی مسیر شما → احتمالاً <strong>~۱۸,۰۰۰ ت</strong> از ارسال برمی‌گرده
+            </div>
+          </div>
+
+          <div class="sh"><h3>📅 ارسال‌های گذشته</h3></div>
+          <div class="del-card" style="opacity:.85">
+            <div class="del-top">
+              <div class="del-date-box" style="background:var(--success)">
+                <div class="d">۸</div>
+                <div class="m">خرداد</div>
+              </div>
+              <div class="del-mid">
+                <div class="del-zone">ونک · پنج‌شنبه</div>
+                <div class="del-win">تحویل شد در 15:42</div>
+              </div>
+              <span class="order-status status-delivered">تحویل شد</span>
+            </div>
+            <div class="del-items">
+              <div class="del-item"><span class="e">🫒</span><span class="n">روغن زیتون</span><span class="q">×۱</span></div>
+            </div>
+            <div class="del-refund">
+              ✅ بازگشت ۱۴,۰۰۰ ت هزینه ارسال به کیف پول
+            </div>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bni" onclick="go('home')"><div class="bni-ic">🏠</div><div class="bni-lb">خانه</div></div>
+          <div class="bni"><div class="bni-ic">🔍</div><div class="bni-lb">جستجو</div></div>
+          <div class="bni" onclick="go('orders')"><div class="bni-ic">📦</div><div class="bni-lb">سفارش‌ها</div></div>
+          <div class="bni" onclick="go('wallet')"><div class="bni-ic">💳</div><div class="bni-lb">کیف پول</div></div>
+          <div class="bni" onclick="go('profile')"><div class="bni-ic">👤</div><div class="bni-lb">پروفایل</div></div>
+        </div>
+      </div>
+
+      <!-- ===== PROFILE ===== -->
+      <div class="screen" id="profile">
+        <div class="dd-hdr">
+          <div style="width:18px"></div>
+          <h3>پروفایل</h3>
+          <div style="width:18px"></div>
+        </div>
+        <div class="scroll">
+          <div class="prof-hero">
+            <div class="prof-av">م</div>
+            <div class="prof-info">
+              <div class="prof-name">متین احمدی</div>
+              <div class="prof-phone" dir="ltr">+98 912 345 6789</div>
+            </div>
+            <button class="btn-ghost">ویرایش</button>
+          </div>
+
+          <div class="refer-card">
+            <h4>🤝 دوستاتو دعوت کن</h4>
+            <p>هر دوست که با کد تو ثبت‌نام کنه و به یه دیل بپیونده، هر دو ۲٪ کش‌بک می‌گیرید</p>
+            <div class="refer-code-box">MATIN۴۲</div>
+            <div class="refer-share">
+              <button>📋 کپی کد</button>
+              <button>💬 تلگرام</button>
+              <button>💚 واتساپ</button>
+            </div>
+          </div>
+
+          <div class="sh"><h3>تنظیمات</h3></div>
+          <div class="menu">
+            <div class="menu-it">
+              <div class="ic">📍</div>
+              <div class="lbl">آدرس و منطقه</div>
+              <div class="ch">ونک ‹</div>
+            </div>
+            <div class="menu-it">
+              <div class="ic">🚚</div>
+              <div class="lbl">روش تحویل پیش‌فرض</div>
+              <div class="ch">پیک ‹</div>
+            </div>
+            <div class="menu-it">
+              <div class="ic">🔔</div>
+              <div class="lbl">اعلان‌ها</div>
+              <div class="ch">›</div>
+            </div>
+            <div class="menu-it" onclick="go('deliveries')">
+              <div class="ic">🚚</div>
+              <div class="lbl">ارسال‌های من</div>
+              <div class="ch">›</div>
+            </div>
+          </div>
+
+          <div class="sh"><h3>پشتیبانی</h3></div>
+          <div class="menu" style="margin-bottom:14px">
+            <div class="menu-it">
+              <div class="ic">💬</div>
+              <div class="lbl">پشتیبانی تلگرام</div>
+              <div class="ch">›</div>
+            </div>
+            <div class="menu-it">
+              <div class="ic">📋</div>
+              <div class="lbl">قوانین و حریم خصوصی</div>
+              <div class="ch">›</div>
+            </div>
+            <div class="menu-it">
+              <div class="ic">ℹ️</div>
+              <div class="lbl">درباره BoxDrop</div>
+              <div class="ch">v۱.۰.۰</div>
+            </div>
+          </div>
+
+          <div style="padding:0 13px 20px">
+            <button class="btn-secondary" style="color:var(--danger);font-weight:800">خروج از حساب</button>
+          </div>
+        </div>
+        <div class="bnav">
+          <div class="bni" onclick="go('home')"><div class="bni-ic">🏠</div><div class="bni-lb">خانه</div></div>
+          <div class="bni"><div class="bni-ic">🔍</div><div class="bni-lb">جستجو</div></div>
+          <div class="bni" onclick="go('orders')"><div class="bni-ic">📦</div><div class="bni-lb">سفارش‌ها</div></div>
+          <div class="bni" onclick="go('wallet')"><div class="bni-ic">💳</div><div class="bni-lb">کیف پول</div></div>
+          <div class="bni act"><div class="bni-ic">👤</div><div class="bni-lb">پروفایل</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const ZC={'ونک':'var(--z-vanak)','پونک':'var(--z-ponak)','نیاوران':'var(--z-niavaran)','سعادت‌آباد':'var(--z-saadat)','جردن':'var(--z-jordan)'};
+const AC=['#FF4500','#8B5CF6','#0EA5E9','#10B981','#F59E0B','#EF4444'];
+
+const P=[
+  {name:'آبجو مالت بدون الکل',emoji:'🍺',bg:'#FFF3EE',zone:'ونک',box:12,retail:24000,wholesale:17000,filled:9,timer:7773,mbrs:['ع','س','ر','م','ک','ن','ا']},
+  {name:'ماهی تن با روغن',emoji:'🐟',bg:'#E3F2FD',zone:'پونک',box:24,retail:11500,wholesale:8200,filled:17,timer:39737,mbrs:['ع','س','ر','م','ک','ن','ا','ح']},
+  {name:'روغن زیتون بکر',emoji:'🫒',bg:'#F3E5F5',zone:'سعادت‌آباد',box:6,retail:230000,wholesale:185000,filled:5,timer:2829,mbrs:['م','ن','ک','ر','ج']},
+  {name:'پنیر سفید لیقوان',emoji:'🧀',bg:'#E8F5E9',zone:'نیاوران',box:8,retail:60000,wholesale:45000,filled:3,timer:74035,mbrs:['س','ر','ل']},
+  {name:'قهوه اسپرسو ایتالیایی',emoji:'☕',bg:'#FFF8E1',zone:'جردن',box:10,retail:280000,wholesale:220000,filled:7,timer:19122,mbrs:['ع','ک','ن','ا','م','ح','ف']},
+];
+
+const f=n=>n.toLocaleString('fa-IR');
+const ft=s=>{const h=s/3600|0,m=(s%3600/60)|0,sec=s%60;return `${(''+h).padStart(2,'0')}:${(''+m).padStart(2,'0')}:${(''+sec).padStart(2,'0')}`};
+
+function tierOf(filled,box){
+  const pct=filled/box;
+  if(filled>=box) return {level:'gold',ic:'🥇',cls:'',color:'var(--gold)'};
+  if(pct>=0.75) return {level:'silver',ic:'🥈',cls:'partial silver',color:'var(--silver)'};
+  return {level:'bronze',ic:'🥉',cls:'partial',color:'var(--bronze)'};
+}
+
+function nudgeFor(filled,box){
+  if(filled>=box) return {txt:'🎉 جعبه پر شد! ارسال در راهه',bg:'#F0FFF4',col:'var(--success)'};
+  const left=box-filled;
+  if(left<=2) return {txt:`🔥 فقط ${f(left)} نفر تا تکمیل جعبه!`,bg:'#FFEBEE',col:'var(--danger)'};
+  if(filled/box>=0.5) return {txt:`⚡ ${f(left)} نفر دیگه و دیل قفل می‌شه`,bg:'#FFFBF0',col:'var(--silver)'};
+  return {txt:`💪 با ${f(left)} نفر دیگه تا قیمت عمده`,bg:'#FFFBF0',col:'var(--bronze)'};
+}
+
+function card(p,i){
+  const t=tierOf(p.filled,p.box);
+  const sp=Math.round((1-p.wholesale/p.retail)*100);
+  const fp=Math.min(p.filled/p.box*100,100);
+  const zc=ZC[p.zone]||'#888';
+  const nu=nudgeFor(p.filled,p.box);
+  const avH=p.mbrs.slice(0,4).map((m,j)=>`<div class="av" style="background:${AC[j%AC.length]}">${m}</div>`).join('')+
+    (p.mbrs.length>4?`<div class="av av-more">+${f(p.mbrs.length-4)}</div>`:'')+
+    `<span class="avtxt">${f(p.mbrs.length)} نفر</span>`;
+  const t1=Math.round(5/p.box*100);
+  const t2=Math.round(Math.floor(p.box*0.75)/p.box*100);
+  return `<div class="card" onclick="go('deal')">
+  <div class="ctop">
+    <div class="cemi" style="background:${p.bg}">${p.emoji}</div>
+    <div class="cmid">
+      <div class="cname">${p.name}</div>
+      <div class="ctags"><span class="zbadge" style="background:${zc}">${p.zone}</span><span class="bbadge">📦 ${f(p.box)} تایی</span></div>
+      <div class="avs">${avH}</div>
+    </div>
+    <div class="cright">
+      <div class="cprice">${f(p.wholesale)} ت</div>
+      <div class="coprice">${f(p.retail)} ت</div>
+      <div class="csave">${f(sp)}٪ سود</div>
+    </div>
+  </div>
+  <div class="tierbar-wrap">
+    <div class="tierbar-hdr"><span>${f(p.filled)} نفر پیوستن</span><strong>${f(p.filled)} از ${f(p.box)} ${t.ic}</strong></div>
+    <div class="tierbar">
+      <div class="tierbar-fill ${t.cls}" style="width:${fp}%"></div>
+      <div class="tmk" style="right:${t1}%"></div>
+      <div class="tmk" style="right:${t2}%"></div>
+    </div>
+  </div>
+  <div class="nudge" style="background:${nu.bg};color:${nu.col};border-color:${nu.col}">${nu.txt}</div>
+  <div class="cfoot">
+    <div class="tmc">⏱ ${ft(p.timer)}</div>
+    <div class="qtyc"><button onclick="event.stopPropagation()">−</button><span>۲</span><button onclick="event.stopPropagation()">+</button></div>
+    <button class="jbtn" onclick="event.stopPropagation();go('deal')">پیوستن 🚀</button>
+  </div>
+</div>`;
+}
+
+document.getElementById('cards').innerHTML=P.map(card).join('');
+
+setInterval(()=>{
+  P.forEach(p=>{if(p.timer>0)p.timer--});
+  document.querySelectorAll('.tmc').forEach((el,i)=>{if(P[i])el.textContent='⏱ '+ft(P[i].timer)});
+},1000);
+
+function go(s){
+  document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById(s).classList.add('active');
+  const tab=document.querySelector(`.tab[data-s="${s}"]`);
+  if(tab)tab.classList.add('active');
+  document.querySelectorAll('.scroll').forEach(e=>e.scrollTop=0);
+}
+
+function openJoinModal(){document.getElementById('joinOverlay').classList.add('open')}
+function closeJoinModal(e){
+  if(e&&e.target!==document.getElementById('joinOverlay'))return;
+  document.getElementById('joinOverlay').classList.remove('open');
+}
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.s)));
+
+// special: join modal accessed from deal screen via its own button — also show as a tab option
+document.querySelector('.tab[data-s="join"]').addEventListener('click',()=>{
+  go('deal');
+  setTimeout(openJoinModal,150);
+});
+</script>
+</body>
+</html>
