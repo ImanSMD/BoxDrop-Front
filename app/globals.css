@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * BoxDrop theme — light only, Persian-first.
+ * shadcn/ui tokens expressed as HSL triplets so `hsl(var(--x))` in the
+ * Tailwind config resolves correctly. Brand palette mirrors CLAUDE.md §5.
+ */
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* card #FFFFFF */
+    --foreground: 240 28% 14%; /* ink #1A1A2E */
+    --card: 0 0% 100%;
+    --card-foreground: 240 28% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 28% 14%;
+    --primary: 16 100% 50%; /* #FF4500 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 24% 96%; /* surface #F2F2F7 */
+    --secondary-foreground: 240 28% 14%;
+    --muted: 240 24% 96%;
+    --muted-foreground: 240 2% 57%; /* #8E8E93 */
+    --accent: 42 100% 50%; /* gold #FFB300 */
+    --accent-foreground: 240 28% 14%;
+    --destructive: 0 84% 60%; /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 11% 91%; /* #E5E5EA */
+    --input: 240 11% 91%;
+    --ring: 16 100% 50%;
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-surface text-ink;
+    font-family: var(--font-vazir), Vazirmatn, Tahoma, sans-serif;
+  }
+  /* Persian digits look best with tabular numerals where aligned */
+  .tabular-fa {
+    font-feature-settings: "tnum";
+  }
+}
+
+/* Hide scrollbars on horizontal scroll rows (category pills, etc.) */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
