@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import {
   Drawer,
@@ -35,20 +34,21 @@ function JoinContent({
   const { data: deal, isLoading } = useDeal(dealId);
   const { data: me } = useMe();
   const join = useJoinDeal(dealId);
-  const [qty, setQty] = useState(1);
-
-  useEffect(() => {
-    if (deal?.my_pledge) setQty(deal.my_pledge.quantity);
-  }, [deal?.my_pledge]);
+  const setDealQty = useUiStore((s) => s.setDealQty);
+  const storedQty = useUiStore((s) => s.dealQty[dealId]);
 
   if (isLoading || !deal) {
     return (
       <div className="p-6 text-center text-sm text-mut">
+        <DrawerTitle className="sr-only">در حال بارگذاری دیل</DrawerTitle>
         در حال بارگذاری…
       </div>
     );
   }
 
+  // Quantity comes from the shared store so the modal opens with whatever the
+  // user picked on the card; falls back to an existing pledge, then 1.
+  const qty = storedQty ?? deal.my_pledge?.quantity ?? 1;
   const goods = deal.wholesale_price * qty;
   const ship = deal.estimated_delivery_fee;
   const lock = goods + ship;
@@ -90,7 +90,7 @@ function JoinContent({
         <div className="flex items-center overflow-hidden rounded-[13px] bg-surface">
           <button
             className="flex h-[42px] w-10 items-center justify-center bg-transparent text-[19px] font-extrabold text-ink"
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
+            onClick={() => setDealQty(dealId, qty - 1)}
           >
             −
           </button>
@@ -99,7 +99,7 @@ function JoinContent({
           </span>
           <button
             className="flex h-[42px] w-10 items-center justify-center bg-transparent text-[19px] font-extrabold text-ink"
-            onClick={() => setQty((q) => q + 1)}
+            onClick={() => setDealQty(dealId, qty + 1)}
           >
             +
           </button>

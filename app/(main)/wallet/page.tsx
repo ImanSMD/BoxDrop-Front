@@ -6,6 +6,7 @@ import { TopupDrawer } from "@/components/wallet/TopupDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWallet, useWalletTransactions } from "@/lib/hooks/useWallet";
 import { formatNumber } from "@/lib/format/number";
+import { formatJalaliDate } from "@/lib/format/date";
 import type { WalletTransaction, WalletTransactionType } from "@/lib/api/types";
 
 const TX_ICON_EMOJI: Record<WalletTransactionType, string> = {
@@ -141,7 +142,7 @@ function TxRow({ tx, last }: { tx: WalletTransaction; last: boolean }) {
           {tx.description}
         </div>
         <div className="mt-0.5 text-[11px] text-mut">
-          {tx.created_at.slice(0, 10)}
+          {formatJalaliDate(tx.created_at)}
         </div>
       </div>
       <div

@@ -66,7 +66,8 @@ export type Deal = {
   extended_deadline: string | null;
   participant_count: number;
   participant_avatars: string[];
-  tier: TierLevel;
+  // null until the deal reaches the bronze threshold (backend current_tier()).
+  tier: TierLevel | null;
   zone?: Zone;
   my_pledge: MyPledgeSummary | null;
 };

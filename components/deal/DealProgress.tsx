@@ -4,7 +4,7 @@ import { formatNumber } from "@/lib/format/number";
 type DealProgressProps = {
   unitsPledged: number;
   boxSize: number;
-  tier: TierLevel;
+  tier: TierLevel | null;
   /** Show the text label above the bar */
   showLabel?: boolean;
   /** Light variant — white track for dark backgrounds */

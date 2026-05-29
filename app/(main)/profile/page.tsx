@@ -1,26 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Copy, ChevronLeft, LogOut } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EditProfileDrawer } from "@/components/profile/EditProfileDrawer";
 import { useMe, useReferral } from "@/lib/hooks/useMe";
 import { useLogout } from "@/lib/hooks/useAuth";
 import { formatNumber } from "@/lib/format/number";
 import { formatMoney } from "@/lib/format/money";
-import type { DeliveryMethod } from "@/lib/api/types";
 
 export default function ProfilePage() {
   const router = useRouter();
   const { data: me, isLoading } = useMe();
   const referral = useReferral();
   const logout = useLogout();
-  const [delivery, setDelivery] = useState<DeliveryMethod>("courier");
-
-  useEffect(() => {
-    if (me) setDelivery(me.default_delivery);
-  }, [me]);
+  const [editOpen, setEditOpen] = useState(false);
 
   const copyCode = async () => {
     if (!me) return;
@@ -47,16 +43,16 @@ export default function ProfilePage() {
   const referralLink =
     typeof window !== "undefined" ? `${window.location.origin}/login?ref=${me.referral_code}` : "";
 
-  const menu1 = [
-    { icon: "📍", label: "آدرس و منطقه", val: me.zone?.name ?? "", href: null },
-    { icon: "🚚", label: "روش تحویل پیش‌فرض", val: delivery === "courier" ? "پیک" : "حضوری", href: null },
-    { icon: "🔔", label: "اعلان‌ها", val: "", href: null },
-    { icon: "📦", label: "ارسال‌های من", val: "", href: "/deliveries" },
+  const menu1: MenuItem[] = [
+    { icon: "📍", label: "آدرس و منطقه", val: me.zone?.name ?? "", onClick: () => setEditOpen(true) },
+    { icon: "🚚", label: "روش تحویل پیش‌فرض", val: me.default_delivery === "courier" ? "پیک" : "حضوری", onClick: () => setEditOpen(true) },
+    { icon: "🔔", label: "اعلان‌ها", val: "" },
+    { icon: "📦", label: "ارسال‌های من", val: "", onClick: () => router.push("/deliveries") },
   ];
-  const menu2 = [
-    { icon: "ℹ️", label: "پشتیبانی تلگرام", val: "", href: null },
-    { icon: "🛡️", label: "قوانین و حریم خصوصی", val: "", href: null },
-    { icon: "ℹ️", label: "درباره BoxDrop", val: "v۱.۰.۰", href: null },
+  const menu2: MenuItem[] = [
+    { icon: "ℹ️", label: "پشتیبانی تلگرام", val: "" },
+    { icon: "🛡️", label: "قوانین و حریم خصوصی", val: "" },
+    { icon: "ℹ️", label: "درباره BoxDrop", val: "v۱.۰.۰" },
   ];
 
   return (
@@ -81,7 +77,10 @@ export default function ProfilePage() {
             {me.phone}
           </div>
         </div>
-        <button className="flex items-center gap-1.5 text-[12.5px] font-extrabold text-primary">
+        <button
+          onClick={() => setEditOpen(true)}
+          className="flex items-center gap-1.5 text-[12.5px] font-extrabold text-primary"
+        >
           ✏️ ویرایش
         </button>
       </div>
@@ -89,6 +88,7 @@ export default function ProfilePage() {
       {/* Stats chips */}
       <div className="flex gap-2.5 border-b-[8px] border-surface px-4 pb-4">
         {[
+          // TODO(phase-2): wire to real endpoints. Placeholder values for now.
           [formatMoney(referral.data?.total_referral_cashback ?? 0), "کل صرفه‌جویی"],
           [formatNumber(23), "دیل تکمیل‌شده"],
           [`${formatNumber(2)} بار`, "قهرمان حجم"],
@@ -156,8 +156,11 @@ export default function ProfilePage() {
       </div>
 
       {/* Settings menu */}
-      <MenuSection title="تنظیمات" items={menu1} router={router} />
-      <MenuSection title="پشتیبانی" items={menu2} router={router} />
+      <MenuSection title="تنظیمات" items={menu1} />
+      <MenuSection title="پشتیبانی" items={menu2} />
+
+      {/* Edit profile drawer */}
+      <EditProfileDrawer open={editOpen} onOpenChange={setEditOpen} me={me} />
 
       {/* Logout */}
       <div className="px-4 pb-7 pt-4">
@@ -174,16 +177,19 @@ export default function ProfilePage() {
   );
 }
 
-type MenuItem = { icon: string; label: string; val: string; href: string | null };
+type MenuItem = {
+  icon: string;
+  label: string;
+  val: string;
+  onClick?: () => void;
+};
 
 function MenuSection({
   title,
   items,
-  router,
 }: {
   title: string;
   items: MenuItem[];
-  router: ReturnType<typeof useRouter>;
 }) {
   return (
     <>
@@ -194,7 +200,7 @@ function MenuSection({
         {items.map((item, i) => (
           <button
             key={i}
-            onClick={() => item.href && router.push(item.href)}
+            onClick={item.onClick}
             className={`flex w-full items-center gap-3 px-4 py-3.5 text-right ${
               i < items.length - 1 ? "border-b border-line" : ""
             }`}

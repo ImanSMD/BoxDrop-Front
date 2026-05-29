@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Sparkles, MapPin, ChevronDown } from "lucide-react";
 import { useMe } from "@/lib/hooks/useMe";
 import { formatNumber } from "@/lib/format/number";
@@ -31,8 +32,11 @@ export function Header() {
         </button>
       </div>
 
-      {/* Dark savings card */}
-      <div className="flex items-center justify-between rounded-[20px] bg-dark px-5 py-[18px]">
+      {/* Dark savings card — tap to open wallet */}
+      <Link
+        href="/wallet"
+        className="flex items-center justify-between rounded-[20px] bg-dark px-5 py-[18px]"
+      >
         <div>
           <div className="mb-1.5 text-[11.5px] font-semibold text-[#A1A1AA]">
             تا امروز جمع کردی
@@ -48,7 +52,7 @@ export function Header() {
             {formatNumber(DEAL_COUNT)} دیل
           </span>
         </div>
-      </div>
+      </Link>
     </header>
   );
 }

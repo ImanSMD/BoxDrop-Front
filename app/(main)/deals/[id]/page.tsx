@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { ChevronRight, Share2, Clock } from "lucide-react";
 import { DealProgress } from "@/components/deal/DealProgress";
 import { DealTierLadder } from "@/components/deal/DealTierLadder";
@@ -25,6 +26,26 @@ export default function DealDetailPage({
     const t = setInterval(() => setTick((n) => n + 1), 1000);
     return () => clearInterval(t);
   }, []);
+
+  const share = async () => {
+    if (typeof window === "undefined") return;
+    const url = window.location.href;
+    const title = deal ? `${deal.product.name} در BoxDrop` : "BoxDrop";
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url });
+      } catch {
+        // user dismissed the share sheet — nothing to do
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("لینک دیل کپی شد.");
+    } catch {
+      toast.error("کپی لینک ناموفق بود.");
+    }
+  };
 
   return (
     <div className="flex flex-1 flex-col bg-white">
@@ -67,12 +88,14 @@ export default function DealDetailPage({
               >
                 <ChevronRight size={20} strokeWidth={2} className="text-ink" />
               </div>
-              <div
+              <button
+                onClick={share}
+                aria-label="اشتراک‌گذاری دیل"
                 className="flex size-[38px] cursor-pointer items-center justify-center rounded-[12px] shadow-md"
                 style={{ background: "rgba(255,255,255,.92)" }}
               >
                 <Share2 size={18} strokeWidth={1.9} className="text-ink" />
-              </div>
+              </button>
             </div>
 
             {/* Heat + zone badges */}

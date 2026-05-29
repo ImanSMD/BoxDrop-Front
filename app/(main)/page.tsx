@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Flame } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { DealCard } from "@/components/deal/DealCard";
@@ -20,6 +21,7 @@ const SORTS: { value: DealSort; label: string }[] = [
 ];
 
 export default function HomePage() {
+  const router = useRouter();
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<DealSort>("ending_soon");
   const { data: categories } = useCategories();
@@ -111,7 +113,7 @@ export default function HomePage() {
           <div
             className="relative mb-4 cursor-pointer overflow-hidden rounded-[20px]"
             style={{ height: 218 }}
-            onClick={() => (window.location.href = `/deals/${featured.id}`)}
+            onClick={() => router.push(`/deals/${featured.id}`)}
           >
             {/* Background */}
             <div className="absolute inset-0 flex items-center justify-center bg-[#EDEDEF] text-7xl">
