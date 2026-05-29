@@ -8,7 +8,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
 import { useTopup } from "@/lib/hooks/useWallet";
 import { formatNumber, toEnglishDigits } from "@/lib/format/number";
 import { formatMoney } from "@/lib/format/money";
@@ -86,13 +85,13 @@ export function TopupDrawer({ children }: { children: React.ReactNode }) {
 
           {error && <p className="text-sm text-danger">{error}</p>}
 
-          <Button
+          <button
             onClick={submit}
             disabled={topup.isPending}
-            className="h-14 w-full rounded-2xl bg-primary text-base font-extrabold text-primary-foreground hover:bg-primary-dark disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-[15px] bg-ink py-4 text-[15px] font-extrabold text-white disabled:opacity-60"
           >
             {topup.isPending ? "در حال انتقال…" : "پرداخت و شارژ"}
-          </Button>
+          </button>
           <p className="text-center text-[11px] text-muted-foreground">
             پرداخت از طریق درگاه امن زرین‌پال انجام می‌شود.
           </p>

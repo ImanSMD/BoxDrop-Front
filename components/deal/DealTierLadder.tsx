@@ -1,12 +1,11 @@
-import type { DealTier, TierLevel } from "@/lib/api/types";
+import { Check } from "lucide-react";
+import type { DealTier } from "@/lib/api/types";
 import { formatNumber } from "@/lib/format/number";
 
-const TIER_ICON: Record<TierLevel, string> = {
-  bronze: "🥉",
-  silver: "🥈",
-  gold: "🥇",
-};
-
+/**
+ * Bold Mono numbered tier nodes (dir-mono.jsx TierNode).
+ * done → green filled with check  |  current → primary filled  |  locked → white with grey border
+ */
 export function DealTierLadder({
   tiers,
   unitsPledged,
@@ -14,47 +13,69 @@ export function DealTierLadder({
   tiers: DealTier[];
   unitsPledged: number;
 }) {
-  // The first tier not yet reached is the "current" stage.
   const currentIndex = tiers.findIndex((t) => unitsPledged < t.threshold);
 
   return (
-    <div className="space-y-2">
+    <div className="relative">
+      {/* Vertical connector line */}
+      <div
+        className="absolute right-[14px] top-1.5 w-0.5 bg-line"
+        style={{ bottom: 22 }}
+      />
+
       {tiers.map((tier, i) => {
-        const unlocked = unitsPledged >= tier.threshold;
+        const done = unitsPledged >= tier.threshold;
         const isCurrent = i === currentIndex;
         const remaining = tier.threshold - unitsPledged;
+
+        const nodeBg = done ? "#108A52" : isCurrent ? "#FF5A1F" : "#FFFFFF";
+        const nodeBorder = done ? "#108A52" : isCurrent ? "#FF5A1F" : "#D4D4D8";
+        const nodeColor = done || isCurrent ? "#fff" : "#71717A";
 
         return (
           <div
             key={tier.level}
-            className={`flex items-center gap-3 rounded-2xl border-2 p-3 ${
-              isCurrent
-                ? "border-primary bg-primary/5"
-                : unlocked
-                  ? "border-transparent bg-success/5"
-                  : "border-transparent bg-surface"
-            }`}
+            className="relative z-[2] flex gap-3 pb-4"
           >
-            <div className="text-2xl">{TIER_ICON[tier.level]}</div>
-            <div className="flex-1">
-              <div className="text-sm font-bold text-ink">
-                {formatNumber(tier.threshold)} واحد و بیشتر
-              </div>
-              <div className="text-xs text-muted-foreground">{tier.label}</div>
+            {/* Node */}
+            <div
+              className="flex size-[30px] shrink-0 items-center justify-center rounded-[10px] text-[13px] font-black"
+              style={{
+                background: nodeBg,
+                border: `2px solid ${nodeBorder}`,
+                color: nodeColor,
+              }}
+            >
+              {done ? (
+                <Check size={15} strokeWidth={2.6} color="#fff" />
+              ) : (
+                formatNumber(i + 1)
+              )}
             </div>
-            {unlocked ? (
-              <span className="rounded-full bg-success/10 px-3 py-1 text-[11px] font-bold text-success">
-                ✓ آنلاک شد
-              </span>
-            ) : isCurrent ? (
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
-                مرحله فعلی
-              </span>
-            ) : (
-              <span className="rounded-full bg-muted px-3 py-1 text-[11px] font-bold text-muted-foreground">
-                {formatNumber(remaining)} واحد دیگه
-              </span>
-            )}
+
+            {/* Label */}
+            <div className="flex-1 pt-0.5">
+              <div className="flex items-center justify-between">
+                <span
+                  className={`text-sm font-extrabold ${done || isCurrent ? "text-ink" : "text-mut"}`}
+                >
+                  {tier.label}
+                </span>
+                {isCurrent && (
+                  <span className="rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-extrabold text-white">
+                    مرحله فعلی
+                  </span>
+                )}
+                {!done && !isCurrent && (
+                  <span className="text-[11px] font-semibold text-mut">
+                    {formatNumber(remaining)} نفر دیگه
+                  </span>
+                )}
+              </div>
+              <div className="mt-0.5 text-[11.5px] text-mut">
+                {formatNumber(tier.threshold)} نفر و بیشتر
+              </div>
+            </div>
           </div>
         );
       })}

@@ -1,39 +1,54 @@
 "use client";
 
-import Link from "next/link";
-import { MapPin, Wallet } from "lucide-react";
+import { Sparkles, MapPin, ChevronDown } from "lucide-react";
 import { useMe } from "@/lib/hooks/useMe";
-import { useWallet } from "@/lib/hooks/useWallet";
-import { formatMoney } from "@/lib/format/money";
+import { formatNumber } from "@/lib/format/number";
+
+// Fixed showcase value — replaced with real data from /me/referral once that exists
+const TOTAL_SAVINGS = 124500;
+const DEAL_COUNT = 23;
 
 export function Header() {
   const { data: me } = useMe();
-  const { data: wallet } = useWallet();
 
   return (
-    <header className="sticky top-0 z-20 bg-card px-5 pb-3 pt-5">
-      <div className="flex items-center justify-between">
-        <div className="text-xl font-black text-ink">
-          <span className="text-primary">Box</span>Drop <span>📦</span>
+    <header className="bg-white px-5 pb-3 pt-2">
+      <div className="flex items-center justify-between pb-3">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <div className="flex size-7 items-center justify-center rounded-lg bg-ink">
+            <span className="text-[10px] font-black text-primary">B</span>
+          </div>
+          <span dir="ltr" className="text-[21px] font-black tracking-tight text-ink">
+            BoxDrop
+          </span>
         </div>
-        <button className="flex items-center gap-1 rounded-full bg-surface px-3 py-1.5 text-sm font-bold text-ink">
-          <MapPin className="size-4 text-primary" />
-          {me?.zone?.name ?? "منطقه"}
+        {/* Zone picker */}
+        <button className="flex items-center gap-1 bg-transparent text-[13px] font-bold text-ink">
+          <MapPin size={16} strokeWidth={1.9} className="text-primary" />
+          {me?.zone?.name ?? "ونک"}
+          <ChevronDown size={13} strokeWidth={2} className="text-mut" />
         </button>
       </div>
 
-      <Link
-        href="/wallet"
-        className="mt-3 flex items-center justify-between rounded-2xl bg-gradient-to-l from-primary to-accent px-4 py-3 text-white"
-      >
-        <span className="flex items-center gap-2 text-sm font-bold">
-          <Wallet className="size-4" />
-          موجودی کیف پول
-        </span>
-        <span className="text-base font-black">
-          {wallet ? formatMoney(wallet.available) : "—"}
-        </span>
-      </Link>
+      {/* Dark savings card */}
+      <div className="flex items-center justify-between rounded-[20px] bg-dark px-5 py-[18px]">
+        <div>
+          <div className="mb-1.5 text-[11.5px] font-semibold text-[#A1A1AA]">
+            تا امروز جمع کردی
+          </div>
+          <div className="text-[30px] font-black leading-none tracking-tight text-white">
+            {formatNumber(TOTAL_SAVINGS)}{" "}
+            <span className="text-sm font-bold text-[#A1A1AA]">ت</span>
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <Sparkles size={26} strokeWidth={1.7} className="text-primary" />
+          <span className="text-[10.5px] font-semibold text-[#A1A1AA]">
+            {formatNumber(DEAL_COUNT)} دیل
+          </span>
+        </div>
+      </div>
     </header>
   );
 }

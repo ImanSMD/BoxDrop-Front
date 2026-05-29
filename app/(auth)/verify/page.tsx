@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRequestOtp, useVerifyOtp } from "@/lib/hooks/useAuth";
 import { toEnglishDigits, toPersianDigits } from "@/lib/format/number";
 
@@ -17,7 +17,6 @@ function VerifyForm() {
 
   const verifyOtp = useVerifyOtp();
   const requestOtp = useRequestOtp();
-
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
   const [error, setError] = useState<string | null>(null);
@@ -36,11 +35,7 @@ function VerifyForm() {
   const submit = async (code: string) => {
     setError(null);
     try {
-      const result = await verifyOtp.mutateAsync({
-        phone,
-        code,
-        referral_code: ref,
-      });
+      const result = await verifyOtp.mutateAsync({ phone, code, referral_code: ref });
       router.replace(result.is_new ? "/onboarding" : "/");
     } catch {
       setError("کد واردشده درست نیست.");
@@ -56,15 +51,10 @@ function VerifyForm() {
       return;
     }
     const next = [...digits];
-    // Support paste of the full code into one box.
     if (value.length > 1) {
-      value
-        .slice(0, OTP_LENGTH - index)
-        .split("")
-        .forEach((ch, k) => (next[index + k] = ch));
+      value.slice(0, OTP_LENGTH - index).split("").forEach((ch, k) => (next[index + k] = ch));
       setDigits(next);
-      const filled = next.filter(Boolean).length;
-      if (filled === OTP_LENGTH) submit(next.join(""));
+      if (next.every(Boolean)) submit(next.join(""));
       else inputs.current[Math.min(index + value.length, OTP_LENGTH - 1)]?.focus();
       return;
     }
@@ -75,9 +65,8 @@ function VerifyForm() {
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !digits[index] && index > 0) {
+    if (e.key === "Backspace" && !digits[index] && index > 0)
       inputs.current[index - 1]?.focus();
-    }
   };
 
   const resend = async () => {
@@ -87,70 +76,91 @@ function VerifyForm() {
   };
 
   return (
-    <div className="flex flex-1 flex-col">
-      <button
-        onClick={() => router.back()}
-        className="mb-2 w-10 text-2xl text-ink"
-        aria-label="بازگشت"
-      >
-        ›
-      </button>
+    <div className="flex flex-1 flex-col pt-3">
+      {/* Back */}
+      <div className="pb-1 pt-2">
+        <button
+          onClick={() => router.back()}
+          className="flex size-10 items-center justify-center rounded-[12px] bg-surface"
+        >
+          <ChevronRight size={20} strokeWidth={2} className="text-ink" />
+        </button>
+      </div>
 
-      <div className="mb-8 mt-2">
-        <h1 className="text-2xl font-black text-ink">کد تأیید را وارد کن</h1>
-        <p className="mt-2 leading-7 text-muted-foreground">
-          کد ۶ رقمی به شماره{" "}
-          <span dir="ltr" className="font-bold text-ink">
+      {/* Headline */}
+      <div className="pb-6 pt-6">
+        <h1 className="text-[25px] font-black leading-[1.35] tracking-[-0.4px] text-ink">
+          کد تأیید رو<br />وارد کن
+        </h1>
+        <p className="mt-2.5 text-[13.5px] leading-7 text-mut">
+          یه کد ۶ رقمی به شماره{" "}
+          <span dir="ltr" className="font-extrabold text-ink">
             {toPersianDigits(phone)}
           </span>{" "}
-          ارسال شد.
+          فرستادیم.
         </p>
       </div>
 
-      <div dir="ltr" className="flex justify-center gap-2">
-        {digits.map((d, i) => (
-          <input
-            key={i}
-            ref={(el) => {
-              inputs.current[i] = el;
-            }}
-            value={toPersianDigits(d)}
-            onChange={(e) => handleChange(i, e.target.value)}
-            onKeyDown={(e) => handleKeyDown(i, e)}
-            inputMode="numeric"
-            maxLength={OTP_LENGTH}
-            autoFocus={i === 0}
-            className="h-14 w-12 rounded-2xl border-2 border-transparent bg-surface text-center text-xl font-black text-ink outline-none focus:border-primary focus:bg-card"
-          />
-        ))}
+      {/* OTP cells — Bold Mono style: filled = white bg + ink border, empty = chip bg */}
+      <div dir="ltr" className="flex justify-between gap-2">
+        {digits.map((d, i) => {
+          const filled = d !== "";
+          return (
+            <input
+              key={i}
+              ref={(el) => { inputs.current[i] = el; }}
+              value={toPersianDigits(d)}
+              onChange={(e) => handleChange(i, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(i, e)}
+              inputMode="numeric"
+              maxLength={OTP_LENGTH}
+              autoFocus={i === 0}
+              className="h-[58px] flex-1 rounded-[14px] text-center text-[22px] font-black text-ink outline-none transition-colors"
+              style={{
+                background: filled ? "#FFFFFF" : "#F4F4F5",
+                border: `1.5px solid ${filled ? "#111114" : "transparent"}`,
+              }}
+            />
+          );
+        })}
       </div>
 
-      {error && <p className="mt-3 text-center text-sm text-danger">{error}</p>}
+      {error && <p className="mt-3 text-center text-[12px] text-danger">{error}</p>}
 
-      <div className="mt-6 text-center">
+      {/* Resend */}
+      <div className="mt-4 text-center text-[13px] font-semibold text-mut">
         {seconds > 0 ? (
-          <p className="text-sm text-muted-foreground">
-            ارسال مجدد کد تا {toPersianDigits(String(seconds))} ثانیه دیگر
-          </p>
+          <>
+            دریافت نکردی؟ ارسال مجدد در{" "}
+            <span className="font-extrabold text-ink" dir="ltr">
+              {toPersianDigits(
+                `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`
+              )}
+            </span>
+          </>
         ) : (
           <button
             onClick={resend}
-            className="text-sm font-bold text-primary"
             disabled={requestOtp.isPending}
+            className="font-extrabold text-primary"
           >
             ارسال مجدد کد
           </button>
         )}
       </div>
 
-      <div className="mt-auto pt-6">
-        <Button
+      {/* Confirm */}
+      <div className="mt-7">
+        <button
           onClick={() => submit(digits.join(""))}
           disabled={digits.some((d) => !d) || verifyOtp.isPending}
-          className="h-14 w-full rounded-2xl bg-primary text-base font-extrabold text-primary-foreground hover:bg-primary-dark disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-[15px] bg-ink py-4 text-[15.5px] font-extrabold text-white disabled:opacity-60"
         >
-          {verifyOtp.isPending ? "در حال بررسی…" : "تأیید"}
-        </Button>
+          {verifyOtp.isPending ? "در حال بررسی…" : "تأیید و ادامه"}
+          {!verifyOtp.isPending && (
+            <ChevronLeft size={18} strokeWidth={2} className="text-primary" />
+          )}
+        </button>
       </div>
     </div>
   );

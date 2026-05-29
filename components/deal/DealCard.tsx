@@ -1,167 +1,91 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Minus, Plus, Timer } from "lucide-react";
 import type { Deal } from "@/lib/api/types";
 import { DealProgress } from "./DealProgress";
-import { formatNumber, toPersianDigits } from "@/lib/format/number";
-import { formatMoney } from "@/lib/format/money";
-import { getCountdown } from "@/lib/format/date";
+import { formatNumber } from "@/lib/format/number";
 import { useUiStore } from "@/lib/store/ui";
 
-const ZONE_BADGE: Record<string, string> = {
-  vanak: "bg-zone-vanak",
-  ponak: "bg-zone-ponak",
-  niavaran: "bg-zone-niavaran",
-  saadatabad: "bg-zone-saadatabad",
-  jordan: "bg-zone-jordan",
+const ZONE_DOT: Record<string, string> = {
+  vanak: "#7C5CFF",
+  ponak: "#0E9FD8",
+  niavaran: "#0FA968",
+  saadatabad: "#E8902B",
+  jordan: "#E0533A",
 };
 
-const AVATAR_BG = ["bg-zone-vanak", "bg-zone-ponak", "bg-tier-silver", "bg-primary"];
-
-function useTick(ms = 1000) {
-  const [, setN] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setN((n) => n + 1), ms);
-    return () => clearInterval(t);
-  }, [ms]);
-}
-
-function timerLabel(deadline: string): string {
-  const c = getCountdown(deadline);
-  if (c.expired) return "پایان یافته";
-  const pad = (n: number) => toPersianDigits(String(n).padStart(2, "0"));
-  if (c.days > 0) return `${formatNumber(c.days)} روز و ${formatNumber(c.hours)} ساعت`;
-  return `${pad(c.hours)}:${pad(c.minutes)}:${pad(c.seconds)}`;
-}
-
+/**
+ * Bold Mono list-row layout (dir-mono.jsx ListRow).
+ * Photo slot 62×62, thin progress bar, price right-aligned.
+ */
 export function DealCard({ deal }: { deal: Deal }) {
   const router = useRouter();
   const openJoin = useUiStore((s) => s.openJoin);
-  const [qty, setQty] = useState(deal.my_pledge?.quantity ?? 1);
-  useTick();
-
-  const remaining = Math.max(0, deal.box_size - deal.units_pledged);
-  const nudge =
-    remaining === 0
-      ? "به قیمت عمده رسید! 🎉"
-      : `${formatNumber(remaining)} واحد تا قیمت عمده`;
-  const zoneClass = deal.zone ? ZONE_BADGE[deal.zone.id] ?? "bg-muted" : "bg-muted";
-  const avatars = deal.participant_avatars.slice(0, 4);
-  const extra = deal.participant_count - avatars.length;
-
-  const goDetail = () => router.push(`/deals/${deal.id}`);
+  const zoneColor = deal.zone ? (ZONE_DOT[deal.zone.id] ?? "#A1A1AA") : "#A1A1AA";
 
   return (
-    <article
-      onClick={goDetail}
-      className="cursor-pointer rounded-2xl bg-card p-4 shadow-sm ring-1 ring-border/50"
+    <div
+      onClick={() => router.push(`/deals/${deal.id}`)}
+      className="flex cursor-pointer items-center gap-3 border-b border-line py-4"
     >
-      <div className="flex gap-3">
-        <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-surface text-3xl">
-          {deal.product.emoji}
+      {/* Photo slot */}
+      <div
+        className="flex shrink-0 items-center justify-center rounded-[15px] bg-[#EDEDEF] text-3xl"
+        style={{ width: 62, height: 62 }}
+      >
+        {deal.product.emoji}
+      </div>
+
+      {/* Middle */}
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-[14.5px] font-extrabold leading-snug text-ink">
+          {deal.product.name}
         </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate font-extrabold text-ink">{deal.product.name}</h3>
-          <div className="mt-1 flex flex-wrap items-center gap-1.5">
-            {deal.zone && (
+        <div className="mt-1.5 flex items-center gap-1.5 text-[11px] font-semibold text-mut">
+          {deal.zone && (
+            <>
               <span
-                className={`rounded-full px-2 py-0.5 text-[11px] font-bold text-white ${zoneClass}`}
-              >
-                {deal.zone.name}
-              </span>
-            )}
-            <span className="rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-muted-foreground">
-              📦 {formatNumber(deal.box_size)} تایی
-            </span>
-          </div>
-          <div className="mt-2 flex items-center">
-            <div className="flex -space-x-2 space-x-reverse">
-              {avatars.map((a, i) => (
-                <span
-                  key={i}
-                  className={`flex size-6 items-center justify-center rounded-full text-[10px] font-bold text-white ring-2 ring-card ${AVATAR_BG[i % AVATAR_BG.length]}`}
-                >
-                  {a}
-                </span>
-              ))}
-              {extra > 0 && (
-                <span className="flex size-6 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-ink ring-2 ring-card">
-                  +{formatNumber(extra)}
-                </span>
-              )}
-            </div>
-            <span className="ms-2 text-[11px] text-muted-foreground">
-              {formatNumber(deal.participant_count)} نفر
-            </span>
-          </div>
+                className="inline-block size-[6px] rounded-full"
+                style={{ background: zoneColor }}
+              />
+              <span>{deal.zone.name}</span>
+              <span className="text-line">•</span>
+            </>
+          )}
+          <span>جعبه {formatNumber(deal.box_size)}‌تایی</span>
         </div>
-        <div className="shrink-0 text-left">
-          <div className="font-black text-primary">
-            {formatMoney(deal.wholesale_price)}
+        <div className="mt-2 flex items-center gap-2">
+          <div className="flex-1">
+            <DealProgress
+              unitsPledged={deal.units_pledged}
+              boxSize={deal.box_size}
+              tier={deal.tier}
+            />
           </div>
-          <div className="text-xs text-muted-foreground line-through">
-            {formatMoney(deal.retail_reference)}
-          </div>
-          <div className="mt-0.5 rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-bold text-success">
-            {formatNumber(deal.savings_percent)}٪ سود
-          </div>
+          <span className="text-[11px] font-extrabold text-ink" dir="ltr">
+            {formatNumber(deal.units_pledged)}/{formatNumber(deal.box_size)}
+          </span>
         </div>
       </div>
 
-      <div className="mt-3">
-        <DealProgress
-          unitsPledged={deal.units_pledged}
-          boxSize={deal.box_size}
-          tier={deal.tier}
-          markers={[Math.round(deal.box_size * 0.4), Math.round(deal.box_size * 0.75)]}
-        />
-      </div>
-
-      <div className="mt-2 rounded-xl bg-accent/10 px-3 py-1.5 text-center text-xs font-bold text-primary-dark">
-        {nudge}
-      </div>
-
-      <div className="mt-3 flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1 text-xs font-bold text-danger">
-          <Timer className="size-4" />
-          {timerLabel(deal.lock_deadline)}
+      {/* Price + savings */}
+      <div
+        className="flex shrink-0 flex-col items-start gap-0.5"
+        onClick={(e) => {
+          e.stopPropagation();
+          openJoin(deal.id);
+        }}
+      >
+        <div className="text-[16px] font-black leading-none tracking-tight text-ink">
+          {formatNumber(deal.wholesale_price)}
+        </div>
+        <div className="text-[10px] text-[#BFBFC6] line-through">
+          {formatNumber(deal.retail_reference)}
+        </div>
+        <span className="mt-0.5 text-[10px] font-extrabold text-primary">
+          ٪{formatNumber(deal.savings_percent)}−
         </span>
-        <div className="flex items-center gap-2">
-          <div
-            className="flex items-center gap-3 rounded-full bg-surface px-2 py-1"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setQty((q) => Math.max(1, q - 1))}
-              className="flex size-6 items-center justify-center rounded-full bg-card text-ink"
-              aria-label="کاهش"
-            >
-              <Minus className="size-3.5" />
-            </button>
-            <span className="min-w-4 text-center text-sm font-bold text-ink">
-              {formatNumber(qty)}
-            </span>
-            <button
-              onClick={() => setQty((q) => q + 1)}
-              className="flex size-6 items-center justify-center rounded-full bg-card text-ink"
-              aria-label="افزایش"
-            >
-              <Plus className="size-3.5" />
-            </button>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              openJoin(deal.id);
-            }}
-            className="rounded-full bg-primary px-4 py-2 text-sm font-extrabold text-primary-foreground hover:bg-primary-dark"
-          >
-            پیوستن 🚀
-          </button>
-        </div>
       </div>
-    </article>
+    </div>
   );
 }

@@ -13,7 +13,7 @@ const config: Config = {
         sans: ["var(--font-vazir)", "Vazirmatn", "Tahoma", "sans-serif"],
       },
       colors: {
-        // shadcn/ui system tokens (driven by CSS vars in globals.css)
+        // shadcn/ui CSS-var tokens
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -27,7 +27,6 @@ const config: Config = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          dark: "#e03d00",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -49,27 +48,25 @@ const config: Config = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
 
-        // BoxDrop brand tokens (CLAUDE.md §5) — literal hex
-        ink: "#1A1A2E",
-        surface: "#F2F2F7",
-        success: "#00C853",
+        // Bold Mono brand tokens (dir-mono.jsx / HANDOFF.md)
+        ink: "#111114",
+        dark: "#16161A",
+        surface: "#F4F4F5",      // chip background
+        line: "#ECECEE",
+        mut: "#71717A",
+        success: "#108A52",
         danger: "#EF4444",
-        tier: {
-          bronze: "#0EA5E9",
-          silver: "#FF9500",
-          gold: "#00C853",
-        },
         zone: {
-          vanak: "#8B5CF6",
-          ponak: "#0EA5E9",
-          niavaran: "#10B981",
-          saadatabad: "#F59E0B",
-          jordan: "#EF4444",
+          vanak: "#7C5CFF",
+          ponak: "#0E9FD8",
+          niavaran: "#0FA968",
+          saadatabad: "#E8902B",
+          jordan: "#E0533A",
         },
       },
       borderRadius: {
         xl: "20px",
-        "2xl": "28px",
+        "2xl": "26px",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",

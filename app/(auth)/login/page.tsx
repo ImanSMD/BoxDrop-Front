@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRequestOtp } from "@/lib/hooks/useAuth";
 import { toEnglishDigits } from "@/lib/format/number";
 
@@ -16,7 +16,7 @@ const schema = z.object({
     .pipe(
       z
         .string()
-        .regex(/^09\d{9}$/, "شماره موبایل را درست وارد کنید (مثل ۰۹۱۲۳۴۵۶۷۸۹)."),
+        .regex(/^09\d{9}$/, "شماره موبایل را درست وارد کنید."),
     ),
 });
 
@@ -29,11 +29,9 @@ function LoginForm() {
   const requestOtp = useRequestOtp();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
 
   const onSubmit = handleSubmit(async (values) => {
     setServerError(null);
@@ -50,50 +48,71 @@ function LoginForm() {
   });
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-1 flex-col">
-      <div className="mb-8 mt-6">
-        <div className="mb-4 text-5xl">📦</div>
-        <h1 className="text-2xl font-black leading-relaxed text-ink">
-          خوش اومدی به باکس‌دراپ
+    <form onSubmit={onSubmit} className="flex flex-1 flex-col pt-3">
+      {/* Back button */}
+      <div className="pb-1 pt-2">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="flex size-10 items-center justify-center rounded-[12px] bg-surface"
+        >
+          <ChevronRight size={20} strokeWidth={2} className="text-ink" />
+        </button>
+      </div>
+
+      {/* Headline */}
+      <div className="pb-7 pt-6">
+        <h1 className="text-[25px] font-black leading-[1.35] tracking-[-0.4px] text-ink">
+          به BoxDrop<br />خوش اومدی
         </h1>
-        <p className="mt-2 leading-7 text-muted-foreground">
+        <p className="mt-2.5 text-[13.5px] leading-7 text-mut">
           شماره موبایلت رو وارد کن تا کد تأیید برات بفرستیم.
         </p>
       </div>
 
-      <label className="mb-2 block text-sm font-bold text-ink">
-        شماره موبایل
-      </label>
-      <div
-        dir="ltr"
-        className="flex items-center rounded-2xl border-2 border-transparent bg-surface px-4 focus-within:border-primary focus-within:bg-card"
-      >
-        <span className="py-4 pe-2 font-bold text-muted-foreground">+۹۸</span>
-        <input
-          {...register("phone")}
-          inputMode="numeric"
-          autoComplete="tel"
-          placeholder="0912 345 6789"
-          className="flex-1 bg-transparent py-4 text-left text-base outline-none"
-        />
-      </div>
-      {(errors.phone || serverError) && (
-        <p className="mt-2 text-sm text-danger">
-          {errors.phone?.message ?? serverError}
-        </p>
-      )}
-
-      <div className="mt-auto pt-6">
-        <Button
-          type="submit"
-          disabled={requestOtp.isPending}
-          className="h-14 w-full rounded-2xl bg-primary text-base font-extrabold text-primary-foreground hover:bg-primary-dark disabled:opacity-60"
+      {/* Phone field */}
+      <div className="mb-5">
+        <label className="mb-2 block text-[12.5px] font-extrabold text-mut">
+          شماره موبایل
+        </label>
+        <div
+          dir="ltr"
+          className="flex items-center rounded-[14px] border-[1.5px] border-primary bg-surface px-4"
         >
-          {requestOtp.isPending ? "در حال ارسال…" : "ارسال کد"}
-        </Button>
-        <p className="mt-4 text-center text-xs leading-6 text-muted-foreground">
-          با ادامه، قوانین و حریم خصوصی باکس‌دراپ را می‌پذیری.
-        </p>
+          <span className="border-l border-line py-4 pl-2.5 pr-0 text-[15px] font-extrabold text-mut">
+            +98
+          </span>
+          <input
+            {...register("phone")}
+            inputMode="numeric"
+            autoComplete="tel"
+            placeholder="912 345 6789"
+            className="flex-1 bg-transparent py-4 ps-3 text-left text-[15.5px] font-bold text-ink outline-none placeholder:text-[#BFBFC6]"
+          />
+        </div>
+        {(errors.phone || serverError) && (
+          <p className="mt-2 text-[12px] text-danger">
+            {errors.phone?.message ?? serverError}
+          </p>
+        )}
+      </div>
+
+      {/* CTA — ink button + orange arrow (Bold Mono pattern) */}
+      <button
+        type="submit"
+        disabled={requestOtp.isPending}
+        className="flex w-full items-center justify-center gap-2 rounded-[15px] bg-ink py-4 text-[15.5px] font-extrabold text-white disabled:opacity-60"
+      >
+        {requestOtp.isPending ? "در حال ارسال…" : "ارسال کد تأیید"}
+        {!requestOtp.isPending && (
+          <ChevronLeft size={18} strokeWidth={2} className="text-primary" />
+        )}
+      </button>
+
+      <div className="mt-auto pb-9 pt-6 text-center text-[11.5px] leading-7 text-mut">
+        با ادامه، با{" "}
+        <span className="font-extrabold text-primary">قوانین و حریم خصوصی</span>{" "}
+        BoxDrop موافقت می‌کنی.
       </div>
     </form>
   );

@@ -55,6 +55,19 @@ export default function DeliveriesPage() {
             <Skeleton key={i} className="h-40 w-full rounded-2xl" />
           ))}
 
+        {deliveries.isError && (
+          <div className="mt-16 flex flex-col items-center gap-3 text-center">
+            <span className="text-4xl">😕</span>
+            <p className="text-sm text-muted-foreground">خطا در دریافت تحویل‌ها.</p>
+            <button
+              onClick={() => deliveries.refetch()}
+              className="rounded-full bg-primary px-5 py-2 text-sm font-bold text-primary-foreground"
+            >
+              تلاش دوباره
+            </button>
+          </div>
+        )}
+
         {deliveries.isSuccess && shown.length === 0 && (
           <div className="mt-16 flex flex-col items-center gap-3 text-center">
             <span className="text-5xl">🚚</span>

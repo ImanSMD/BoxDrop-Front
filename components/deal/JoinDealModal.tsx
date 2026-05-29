@@ -1,29 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
 import { useUiStore } from "@/lib/store/ui";
 import { useDeal, useJoinDeal } from "@/lib/hooks/useDeals";
 import { useMe } from "@/lib/hooks/useMe";
-import { formatMoney } from "@/lib/format/money";
 import { formatNumber } from "@/lib/format/number";
 
-/** Global Join sheet, driven by the ui store (opened from cards & deal page). */
 export function JoinDealModal() {
   const dealId = useUiStore((s) => s.joinDealId);
   const closeJoin = useUiStore((s) => s.closeJoin);
-  const open = dealId !== null;
-
   return (
-    <Drawer open={open} onOpenChange={(o) => !o && closeJoin()}>
-      <DrawerContent dir="rtl" className="mx-auto max-w-md">
+    <Drawer open={dealId !== null} onOpenChange={(o) => !o && closeJoin()}>
+      <DrawerContent dir="rtl" className="mx-auto max-w-md rounded-t-[26px]">
         {dealId && <JoinContent dealId={dealId} onDone={closeJoin} />}
       </DrawerContent>
     </Drawer>
@@ -48,116 +43,153 @@ function JoinContent({
 
   if (isLoading || !deal) {
     return (
-      <div className="p-6 text-center text-sm text-muted-foreground">
+      <div className="p-6 text-center text-sm text-mut">
         در حال بارگذاری…
       </div>
     );
   }
 
   const goods = deal.wholesale_price * qty;
-  const deliveryFee = deal.estimated_delivery_fee;
-  const total = goods + deliveryFee;
+  const ship = deal.estimated_delivery_fee;
+  const lock = goods + ship;
 
   const confirm = async () => {
     try {
       await join.mutateAsync({ quantity: qty });
       onDone();
     } catch {
-      /* error toast handled in hook */
+      // error toast handled in hook
     }
   };
 
   return (
-    <>
-      <DrawerHeader className="px-5">
+    <div dir="rtl" className="px-5 pb-7 pt-3 font-sans">
+      {/* Handle */}
+      <div className="mx-auto mb-4 h-1 w-9 rounded-full bg-line" />
+
+      {/* Product header */}
+      <DrawerHeader className="p-0 mb-4">
         <div className="flex items-center gap-3">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-surface text-2xl">
+          <div className="flex size-14 shrink-0 items-center justify-center rounded-[15px] bg-[#EDEDEF] text-2xl">
             {deal.product.emoji}
           </div>
-          <div className="text-right">
-            <DrawerTitle className="text-base font-extrabold text-ink">
+          <div>
+            <DrawerTitle className="text-right text-[16.5px] font-black text-ink">
               {deal.product.name}
             </DrawerTitle>
-            <p className="text-xs text-muted-foreground">
-              قیمت عمده: {formatMoney(deal.wholesale_price)} / واحد
+            <p className="text-[12px] text-mut">
+              قیمت عمده: {formatNumber(deal.wholesale_price)} ت / واحد
             </p>
           </div>
         </div>
       </DrawerHeader>
 
-      <div className="space-y-4 px-5 pb-6">
-        {/* Quantity stepper */}
-        <div className="flex items-center justify-between rounded-2xl bg-surface px-4 py-3">
-          <span className="text-sm font-bold text-ink">چند تا می‌خوای؟</span>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setQty((q) => Math.max(1, q - 1))}
-              className="flex size-9 items-center justify-center rounded-full bg-card text-ink shadow-sm"
-              aria-label="کاهش"
-            >
-              <Minus className="size-4" />
-            </button>
-            <span className="min-w-6 text-center text-lg font-black text-ink">
-              {formatNumber(qty)}
-            </span>
-            <button
-              onClick={() => setQty((q) => q + 1)}
-              className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground"
-              aria-label="افزایش"
-            >
-              <Plus className="size-4" />
-            </button>
-          </div>
+      {/* Qty stepper */}
+      <div className="flex items-center justify-between border-y border-line py-3.5">
+        <span className="text-sm font-extrabold text-ink">چند تا می‌خوای؟</span>
+        <div className="flex items-center overflow-hidden rounded-[13px] bg-surface">
+          <button
+            className="flex h-[42px] w-10 items-center justify-center bg-transparent text-[19px] font-extrabold text-ink"
+            onClick={() => setQty((q) => Math.max(1, q - 1))}
+          >
+            −
+          </button>
+          <span className="min-w-[26px] text-center text-[16px] font-black text-ink">
+            {formatNumber(qty)}
+          </span>
+          <button
+            className="flex h-[42px] w-10 items-center justify-center bg-transparent text-[19px] font-extrabold text-ink"
+            onClick={() => setQty((q) => q + 1)}
+          >
+            +
+          </button>
         </div>
-
-        {/* Live totals */}
-        <div className="space-y-2 rounded-2xl bg-surface p-4">
-          <Row label={`بهای کالا (${formatNumber(qty)} واحد)`} value={formatMoney(goods)} />
-          <Row label="هزینه ارسال تخمینی" value={formatMoney(deliveryFee)} />
-          <div className="mt-1 flex items-center justify-between border-t border-border pt-3">
-            <span className="font-extrabold text-ink">مبلغ قابل قفل</span>
-            <span className="text-lg font-black text-primary">
-              {formatMoney(total)}
-            </span>
-          </div>
-        </div>
-
-        {/* Referral suggestion */}
-        <div className="flex items-center gap-3 rounded-2xl bg-accent/10 p-3">
-          <span className="text-xl">🤝</span>
-          <div className="flex-1">
-            <strong className="text-xs font-extrabold text-ink">
-              دوستت رو دعوت کن
-            </strong>
-            <p className="text-[11px] text-muted-foreground">
-              با کد{" "}
-              <span className="font-bold text-primary">
-                {me?.referral_code ?? "—"}
-              </span>{" "}
-              هر دو ۲٪ کش‌بک می‌گیرید.
-            </p>
-          </div>
-        </div>
-
-        <Button
-          onClick={confirm}
-          disabled={join.isPending}
-          className="h-14 w-full rounded-2xl bg-primary text-base font-extrabold text-primary-foreground hover:bg-primary-dark disabled:opacity-60"
-        >
-          {join.isPending
-            ? "در حال ثبت…"
-            : `پیوستن و قفل ${formatMoney(total)} 🚀`}
-        </Button>
       </div>
-    </>
+
+      {/* Price breakdown */}
+      <div className="py-3">
+        <Row l={`قیمت محصول (${formatNumber(qty)} عدد)`} r={`${formatNumber(goods)} ت`} />
+        <Row l="برآورد هزینه ارسال" r={`${formatNumber(ship)} ت`} />
+        <Row
+          l="احتمال بازگشت بخشی از ارسال"
+          r="با تعداد همسایه‌ها"
+          sub
+          tone="#108A52"
+        />
+        <div className="flex items-center justify-between border-t border-line pt-3 mt-1.5">
+          <span className="text-sm font-black text-ink">قفل می‌شه از کیف پول</span>
+          <span className="text-[19px] font-black text-primary" dir="ltr">
+            {formatNumber(lock)} ت
+          </span>
+        </div>
+      </div>
+
+      {/* Referral tip */}
+      <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-surface px-3.5 py-3">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-[11px] bg-white">
+          🎁
+        </div>
+        <div className="flex-1">
+          <div className="text-[12.5px] font-extrabold text-ink">دوستت رو دعوت کن</div>
+          <div className="text-[11px] text-mut">
+            {me?.referral_code ? (
+              <>
+                با کد <span className="font-bold text-ink">{me.referral_code}</span>{" "}
+              </>
+            ) : null}
+            ۲٪ کش‌بک برای هر دو وقتی دیل قفل شه
+          </div>
+        </div>
+      </div>
+
+      {/* Confirm — ink button + orange arrow (dir-mono.jsx pattern) */}
+      <button
+        onClick={confirm}
+        disabled={join.isPending}
+        className="flex w-full items-center justify-center gap-2 rounded-[15px] bg-ink py-4 text-[15px] font-extrabold text-white disabled:opacity-60"
+      >
+        {join.isPending ? "در حال ثبت…" : "تأیید و پیوستن"}
+        {!join.isPending && (
+          <ChevronLeft size={18} strokeWidth={2} className="text-primary" />
+        )}
+      </button>
+
+      <button
+        onClick={onDone}
+        className="mt-3 w-full bg-transparent py-2 text-[13px] font-bold text-mut"
+      >
+        بعداً
+      </button>
+    </div>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({
+  l,
+  r,
+  sub,
+  tone,
+}: {
+  l: string;
+  r: string;
+  sub?: boolean;
+  tone?: string;
+}) {
   return (
-    <div className="flex items-center justify-between text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="font-bold text-ink">{value}</span>
+    <div className="flex items-center justify-between py-2">
+      <span
+        className={sub ? "text-[11.5px] font-bold" : "text-[13px] font-semibold text-mut"}
+        style={tone ? { color: tone } : undefined}
+      >
+        {l}
+      </span>
+      <span
+        className={sub ? "text-[11px] font-extrabold" : "text-sm font-extrabold text-ink"}
+        style={tone ? { color: tone } : undefined}
+        dir="ltr"
+      >
+        {r}
+      </span>
     </div>
   );
 }
