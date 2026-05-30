@@ -175,6 +175,16 @@ Token storage:
 
 > The contract is binding. Frontend MUST consume the exact shapes below. To change anything, update this section first, then update code on both sides.
 
+> **Phase 1 Completion (v2) contract changes** — new mechanics: cancel-with-penalty, add-to-pledge, two-tier referrals, deal share, web push.
+> - **Added** `penalty` to `WalletTransaction.type`.
+> - **Added** `zone` to the Deal summary shape.
+> - **Added** `pledge` (id/status/grace_until) to `OrderDetail`.
+> - **Changed** `GET /me/referral` to a two-section shape (`signup` + `deal_fills`).
+> - **Changed** `POST /deals/{id}/join` to accept an optional `dref` (deal-referral token).
+> - **Changed** `POST /pledges/{id}/cancel` to return `{ok, refunded, penalty}` and to allow post-grace cancel with a penalty.
+> - **New** endpoints: `GET /deals/{id}/share`, `GET /pledges/{id}/cancel-preview`, `POST /me/signup-referral`, `POST`/`DELETE /me/push-subscription`.
+> - **Clarified** allowed enum values for `Pledge.status`, `Order.status`/timeline, `Delivery.status`, and packaged-per-user deliveries.
+
 Conventions:
 - Base path: `/api/v1/`
 - Auth header: `Authorization: Bearer <access_token>`
@@ -193,7 +203,10 @@ Conventions:
 **User**
 - `GET /me` → `User`
 - `PATCH /me` → subset of `{full_name, address, address_pin, zone_id, default_delivery}` → `User`
-- `GET /me/referral` → `{code, invited_count, total_referral_cashback}`
+- `GET /me/referral` → `Referral` (two sections: `signup` + `deal_fills`)
+- `POST /me/signup-referral` → `{code}` → `{ok, reward_amount}` (one-time; errors: `invalid_code`, `already_referred`, `self_referral`)
+- `POST /me/push-subscription` → browser `PushSubscription` JSON → `{ok}`
+- `DELETE /me/push-subscription` → `{ok}`
 
 **Wallet**
 - `GET /wallet` → `{available, locked, currency: "IRT"}`
@@ -207,9 +220,11 @@ Conventions:
 - `GET /deals/{id}` → `DealDetail`
 
 **Deal Actions**
-- `POST /deals/{id}/join` → `{quantity}` → `Pledge`
-- `POST /pledges/{id}/update` → `{quantity}` → `Pledge`
-- `POST /pledges/{id}/cancel` → `{ok, refunded}`
+- `POST /deals/{id}/join` → `{quantity, dref?}` → `Pledge` (`dref` = deal-referral token from a share link)
+- `GET /deals/{id}/share` → `{share_url}` (share link carries the caller's `dref`)
+- `POST /pledges/{id}/update` → `{quantity}` → `Pledge` (increase allowed while deal `open`/`extended` and capacity remains)
+- `GET /pledges/{id}/cancel-preview` → `CancelPreview`
+- `POST /pledges/{id}/cancel` → `{ok, refunded, penalty}` (free within `grace_until`; post-grace applies penalty; error `deal_already_locked` once the deal has locked)
 
 **Orders & Deliveries**
 - `GET /orders` → `Order[]`
@@ -231,6 +246,7 @@ Conventions:
   "product": { "name": "آبجو مالت", "emoji": "🍺", "image_url": null,
                "category": { "id": "...", "name": "نوشیدنی", "emoji": "🥤" } },
   "box_size": 12, "units_pledged": 9,
+  "zone": { "id": "vanak", "name": "ونک" },
   "wholesale_price": 17000, "retail_reference": 24000, "savings_percent": 29,
   "status": "open", "opens_at": "...", "lock_deadline": "...", "extended_deadline": null,
   "participant_count": 7, "participant_avatars": ["ع","س","ر"],
@@ -247,20 +263,22 @@ Conventions:
   "estimated_delivery_fee": 35000,
   "supplier": { "business_name": "..." } }
 
-// Pledge
+// Pledge   (status ∈ active | cancelled | captured | refunded)
 { "id": "uuid", "deal_id": "uuid", "quantity": 2,
   "unit_price": 17000, "goods_total": 34000,
   "estimated_delivery_fee": 35000, "total_locked": 69000,
   "status": "active", "is_volume_champion": false,
   "grace_until": "...", "created_at": "..." }
 
-// Order
+// Order   (status / timeline state ∈ joined | locked | preparing | out_for_delivery | delivered | cancelled)
 { "id": "uuid", "deal": { /* summary */ }, "quantity": 2,
   "status": "locked", "total_locked": 69000,
   "delivery": { "scheduled_date": "...", "zone": "ونک", "window": "14:00-17:00" } | null,
-  "timeline": [{ "state": "joined", "at": "...", "done": true }, ...] }
+  "timeline": [{ "state": "joined", "at": "...", "done": true }, ...],
+  "pledge": { "id": "uuid", "status": "active", "grace_until": "..." } | null }   // detail only
 
-// Delivery
+// Delivery   (status ∈ pending | scheduled | out_for_delivery | delivered | reconciled)
+// One delivery per user per BoxDay; `items` aggregates every deal the user has on that route.
 { "id": "uuid", "scheduled_date": "2026-06-06", "zone": "ونک",
   "window": "14:00-17:00", "status": "pending",
   "estimated_fee": 35000, "final_fee": null, "users_on_route": null,
@@ -268,9 +286,28 @@ Conventions:
 
 // WalletTransaction
 { "id": "uuid",
-  "type": "topup|lock|unlock|capture|refund|cashback|delivery_reconciliation",
-  "amount": 17000, "balance_after": 124500,
+  "type": "topup|lock|unlock|capture|refund|cashback|delivery_reconciliation|penalty",
+  "amount": 17000, "balance_after": 124500,   // `penalty` is a negative (debit) amount
   "description": "...", "created_at": "..." }
+
+// Referral   (GET /me/referral — two-tier: app signups vs. in-deal invites)
+{ "code": "MATIN42",
+  "signup":     { "invited_count": 4, "total_cashback": 80000 },
+  "deal_fills": { "activations_count": 7, "total_cashback": 86000 } }
+
+// CancelPreview   (GET /pledges/{id}/cancel-preview)
+{ "is_free": true,                // true while within grace_until
+  "free_until": "..." | null,     // grace_until when is_free, else null
+  "penalty_pct": 30,              // 0 when is_free
+  "penalty_amount": 0,            // Toman withheld on confirm
+  "refund_amount": 69000,         // Toman returned to the wallet on confirm
+  "total_locked": 69000 }
+
+// SignupReferralResult   (POST /me/signup-referral)
+{ "ok": true, "reward_amount": 20000 }
+
+// ShareLink   (GET /deals/{id}/share)
+{ "share_url": "https://app.boxdrop.ir/deals/{id}?dref=ABC123" }
 ```
 
 ## 9. Screens — Phase 1 Build List
